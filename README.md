@@ -9,23 +9,24 @@
 - moonwarnishan
 
 ## Project Description
-Scalable E-commerce Platform
+XenonVita – Transforming Healthcare with Technology
 
-An innovative, secure, and scalable eCommerce solution designed to cater to businesses of all sizes.
+XenonVita is a cutting-edge digital healthcare platform designed to improve accessibility, streamline medical services, and foster community engagement. The platform integrates innovative technologies to provide efficient, personalized, and equitable healthcare solutions.
 
 Core Features:
 
-- User Experience: Advanced product search, wishlist, cart management, and order tracking.
-- Security: JWT-based user authentication and authorization.
-- Business Tools: Role-based admin panel and email notifications (SMTP integration).
+- Medical Services: Online/offline appointment scheduling, prescription submission, and home delivery.
+- Community Engagement: Doctor and user communities, health blogs, and a blood donation system.
+- Advanced Technology: Location-based disease alerts and secure user authentication (JWT).
   
 Technical Specifications:
 
-- Backend: Spring Boot microservices, Redis caching, PostgreSQL/MySQL, Kafka for real-time updates.
-- Frontend: React or Angular with responsive UI and state management (Redux/Context API).
-- DevOps: Kubernetes for orchestration, Jenkins for CI/CD, Docker for containerization.
+- Backend: Spring Boot microservices, Redis caching, PostgreSQL database, Kafka for real-time communication.
+- Frontend: React with responsive UI, state management (Redux/Context API).
+- DevOps: Kubernetes, Jenkins, and Docker for scalability and deployment.
 
-  A secure and scalable eCommerce platform designed to enhance business reach and customer satisfaction through innovative technology and seamless functionality. Our goal is to empower businesses with robust tools for growth and user engagement.
+
+  XenonVita aims to revolutionize healthcare by integrating technology to provide accessible, efficient, and personalized medical services. Our goal is to empower individuals and healthcare providers, ensuring equitable access and fostering a connected health ecosystem.
 
 ## Getting Started
 1. Clone the repository
