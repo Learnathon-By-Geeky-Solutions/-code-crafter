@@ -1,4 +1,4 @@
-package com.xenonvita.presenter.api;
+package com.xenon.presenter.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
