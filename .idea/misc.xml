@@ -5,6 +5,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/xenonvita/pom.xml" />
+        <option value="$PROJECT_DIR$/xenon/pom.xml" />
       </list>
     </option>
   </component>

@@ -1,6 +1,9 @@
 package com.xenon.common.handler;
 
-import com.xenon.core.domain.exception.*;
+import com.xenon.core.domain.exception.ApiException;
+import com.xenon.core.domain.exception.AuthException;
+import com.xenon.core.domain.exception.BaseException;
+import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.model.ResponseMessage;
 import com.xenon.core.domain.response.BaseResponse;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +27,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({AuthException.class})
     public ResponseEntity<?> handleAuthException(@NonNull BaseException e) {
         return error(e.getResponseMessage() != null ? e.getResponseMessage() : ResponseMessage.AUTHENTICATION_FAILED, e.getMessage());
-    }
-
-    @ExceptionHandler({UnauthorizedException.class})
-    public ResponseEntity<?> handleUnauthorizedException(@NonNull BaseException e) {
-        return error(e.getResponseMessage() != null ? e.getResponseMessage() : ResponseMessage.UNAUTHORIZED, e.getMessage());
     }
 
     protected <T> ResponseEntity<BaseResponse<T>> error(@NonNull ResponseMessage response, @NonNull String message) {

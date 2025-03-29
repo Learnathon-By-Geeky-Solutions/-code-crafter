@@ -1,6 +1,19 @@
 spring:
   application:
-    name: XENON-VITA
+    name: ${APPLICATION_NAME}
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres?schema=public
+    username: postgres
+    password: root
 
 server:
   port: 8080
+
+security:
+  password:
+    strength: 10
+  jwt:
+    secret-key: 038cbf91fa4189a412177d37a611effcb6be36c7fb97e5474d96c063faabce84
+    validity: 30
