@@ -7,9 +7,11 @@ import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.model.ResponseMessage;
 import com.xenon.core.domain.response.BaseResponse;
 import com.xenon.data.entity.user.User;
+import com.xenon.data.repository.UpazilaRepository;
 import com.xenon.data.repository.UserRepository;
 import com.xenon.presenter.config.ApplicationConfig;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +19,23 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
-
+@Setter
 public abstract class BaseService {
 
     private static final Logger log = LoggerFactory.getLogger(BaseService.class);
     protected UserRepository userRepository;
+    protected UpazilaRepository upazilaRepository;
     protected HttpServletRequest request;
     protected ObjectMapper objectMapper;
 
     @Autowired
     private void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Autowired
+    private void setUpazilaRepository(UpazilaRepository upazilaRepository) {
+        this.upazilaRepository = upazilaRepository;
     }
 
     @Autowired
@@ -41,6 +49,7 @@ public abstract class BaseService {
     }
 
     protected static final Pattern PHONE_PATTERN = Pattern.compile("^01[3-9]\\d{8}$");
+    protected static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
 
     protected User getCurrentUser() {
         String userJson = (String) request.getAttribute(ApplicationConfig.USER_REQUEST_ATTRIBUTE_KEY);
@@ -54,9 +63,29 @@ public abstract class BaseService {
         }
     }
 
+    public  boolean isValidNumber(String number) {
+        if (number == null || number.isEmpty()) return false;
+        if (number.charAt(0) == '-' || number.charAt(0) == '+') number = number.substring(1);
+
+        char[] numbers = number.toCharArray();
+        boolean hasDecimal = false;
+
+        for (char c : numbers) {
+            if (c == '.') {
+                if (hasDecimal) return false;
+                hasDecimal = true;
+                continue;
+            }
+            if (c < '0' || c > '9') return false;
+        }
+
+        return !hasDecimal || number.indexOf('.') != number.length() - 1;
+    }
+
     protected String getCurrentUserPhone() {
         return getCurrentUser().getPhone();
     }
+
 
     protected String getCurrentUserEmail() {
         return getCurrentUser().getEmail();
