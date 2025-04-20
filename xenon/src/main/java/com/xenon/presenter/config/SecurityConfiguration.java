@@ -12,6 +12,9 @@ public class SecurityConfiguration {
     @Value("${security.password.strength}")
     private int passwordStrength;
 
+    public static final String BACKEND_URL = "http://localhost:8080";
+    public static final String FRONTEND_URL = "http://localhost:3000";
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(passwordStrength);

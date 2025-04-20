@@ -14,12 +14,12 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(
                 contact = @Contact(
-                        name = "Saad Ahmed",
-                        email = "contact@saadahmedev.com",
-                        url = "https://saadahmedev.com/"
+                        name = "Monowar Hossen Sourav",
+                        email = "souravahmednirob@gmail.com",
+                        url = "https://souravahmednirob.com/"
                 ),
-                description = "Portfolio - API Documentation",
-                title = "Portfolio Backend",
+                description = "API Documentation For Xenon",
+                title = "Backend",
                 version = "1.0.0-SNAPSHOT",
                 license = @License(
                         name = "Apache 2.0",

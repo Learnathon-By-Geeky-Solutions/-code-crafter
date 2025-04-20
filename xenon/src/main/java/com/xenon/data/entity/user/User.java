@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xenon.core.domain.response.user.UserResponse;
 import com.xenon.data.entity.location.Upazila;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -21,10 +23,10 @@ public class User {
     private Long id;
 
     @Column(length = 30)
-    private String fname;
+    private String fastName;
 
     @Column(length = 30)
-    private String lname;
+    private String lastName;
 
     @Column(length = 20, nullable = false, unique = true)
     private String phone;
@@ -37,11 +39,11 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private UserRole role = UserRole.USER;
+    private UserRole role;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private AccountStatus status = AccountStatus.INACTIVE;
+    private AccountStatus status = AccountStatus.ACTIVE;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "UPAZILA_ID")
@@ -76,16 +78,17 @@ public class User {
         updatedAt = ZonedDateTime.now();
     }
 
-    public User(String phone, String password) {
+    public User(String phone, String password, UserRole role) {
         this.phone = phone;
         this.password = password;
+        this.role = role;
     }
 
     public UserResponse toResponse() {
         return new UserResponse(
                 this.id,
-                this.fname,
-                this.lname,
+                this.fastName,
+                this.lastName,
                 this.phone,
                 this.email,
                 this.role,
