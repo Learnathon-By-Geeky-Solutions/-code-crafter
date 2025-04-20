@@ -4,9 +4,12 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres?schema=public
-    username: postgres
-    password: root
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?schema=public
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
 
 server:
   port: 8080
@@ -17,3 +20,4 @@ security:
   jwt:
     secret-key: 038cbf91fa4189a412177d37a611effcb6be36c7fb97e5474d96c063faabce84
     validity: 30
+
