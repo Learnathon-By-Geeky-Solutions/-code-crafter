@@ -5,6 +5,7 @@ import com.xenon.core.domain.request.healthAuthorization.CreateAlertRequest;
 import com.xenon.core.domain.request.healthAuthorization.CreateHealthAuthorizationAccountRequest;
 import com.xenon.core.service.healthAuthorization.HealthAuthorizationService;
 import com.xenon.data.entity.user.UserRole;
+import com.xenon.presenter.config.SecurityConfiguration;
 import io.micrometer.common.lang.Nullable;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/health-authorization")
 @RequiredArgsConstructor
+@CrossOrigin(origins = {SecurityConfiguration.BACKEND_URL, SecurityConfiguration.FRONTEND_URL})
 public class HealthAuthorizationController {
 
     private final HealthAuthorizationService healthAuthorizationService;

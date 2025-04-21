@@ -4,6 +4,7 @@ import com.xenon.common.annotation.PreAuthorize;
 import com.xenon.core.domain.request.blog.CreateBlogPostRequest;
 import com.xenon.core.service.blog.BlogService;
 import com.xenon.data.entity.user.UserRole;
+import com.xenon.presenter.config.SecurityConfiguration;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/blog")
 @RequiredArgsConstructor
+@CrossOrigin(origins = {SecurityConfiguration.BACKEND_URL, SecurityConfiguration.FRONTEND_URL})
 public class BlogController {
 
     private final BlogService blogService;

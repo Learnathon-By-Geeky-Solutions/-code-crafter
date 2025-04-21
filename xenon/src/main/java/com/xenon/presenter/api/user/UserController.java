@@ -6,15 +6,19 @@ import com.xenon.core.domain.request.user.CreateAccountRequest;
 import com.xenon.core.domain.request.user.UpdateAccountRequest;
 import com.xenon.core.service.user.UserService;
 import com.xenon.data.entity.user.UserRole;
+import com.xenon.presenter.config.SecurityConfiguration;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/user")
 @RequiredArgsConstructor
+@CrossOrigin(origins = {SecurityConfiguration.BACKEND_URL, SecurityConfiguration.FRONTEND_URL})
 public class UserController {
 
     private final UserService userService;
@@ -39,5 +43,6 @@ public class UserController {
     public ResponseEntity<?> getUserProfile() {
         return userService.getProfile();
     }
+
 
 }

@@ -5,18 +5,17 @@ import com.xenon.core.domain.request.consultation.CreateSpecialistConsultationAp
 import com.xenon.core.domain.request.consultation.CreateSpecialistConsultationRequest;
 import com.xenon.core.service.consultation.SpecialistConsultationService;
 import com.xenon.data.entity.user.UserRole;
+import com.xenon.presenter.config.SecurityConfiguration;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/v1/specialist-consultation")
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = {SecurityConfiguration.BACKEND_URL, SecurityConfiguration.FRONTEND_URL})
 public class SpecialistConsultationController {
 
     private final SpecialistConsultationService specialistConsultationService;
