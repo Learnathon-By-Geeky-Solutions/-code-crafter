@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 public class CreateCommentRequest {
 
     private Long blogId;
-    private Long userId;
     private String content;
 
     public Comment toEntity(User user, Blog blog) {

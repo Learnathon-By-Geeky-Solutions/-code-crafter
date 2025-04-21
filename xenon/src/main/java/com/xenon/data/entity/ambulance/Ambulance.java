@@ -1,5 +1,6 @@
 package com.xenon.data.entity.ambulance;
 
+import com.xenon.core.domain.response.ambulance.AmbulanceResponse;
 import com.xenon.data.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -78,5 +79,9 @@ public class Ambulance {
         this.paramedics = paramedics;
         this.team_qualification = teamQualification;
         this.starting_fee = startingFee;
+    }
+
+    public AmbulanceResponse toResponse() {
+        return new AmbulanceResponse(id, user.toResponse(), ambulanceType, ambulanceNumber, ambulanceStatus, about, service_offers, hospital_affiliation, coverage_areas, response_time, doctors, nurses, paramedics, team_qualification, starting_fee);
     }
 }

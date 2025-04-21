@@ -1,5 +1,6 @@
 package com.xenon.data.entity.ambulance;
 
+import com.xenon.core.domain.response.ambulance.AmbulanceReviewResponse;
 import com.xenon.data.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,5 +43,15 @@ public class AmbulanceReview {
         this.rating = rating;
         this.review = review;
         this.date = LocalDate.now();
+    }
+
+    public AmbulanceReviewResponse toResponse() {
+        return new AmbulanceReviewResponse(
+                id,
+                user.toResponse(),
+                rating,
+                review,
+                date
+        );
     }
 }

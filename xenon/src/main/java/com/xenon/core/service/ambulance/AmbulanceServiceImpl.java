@@ -2,18 +2,22 @@ package com.xenon.core.service.ambulance;
 
 import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.exception.AuthException;
-import com.xenon.core.domain.model.ResponseMessage;
 import com.xenon.core.domain.request.ambulance.AmbulanceReviewRequest;
 import com.xenon.core.domain.request.ambulance.CreateAmbulanceAccountRequest;
+import com.xenon.core.domain.response.ambulance.AmbulanceListResponse;
+import com.xenon.core.domain.response.ambulance.projection.AmbulanceMetadataProjection;
 import com.xenon.core.service.BaseService;
 import com.xenon.data.entity.ambulance.Ambulance;
-import com.xenon.data.entity.user.User;
+import com.xenon.data.entity.ambulance.AmbulanceReview;
+import com.xenon.data.entity.ambulance.AmbulanceType;
 import com.xenon.data.repository.AmbulanceRepository;
 import com.xenon.data.repository.AmbulanceReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +55,30 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
         }
     }
 
+    @Override
+    public ResponseEntity<?> getAmbulanceList(AmbulanceType type) {
+        AmbulanceMetadataProjection metadata = ambulanceRepository.getAmbulanceMetadata(type.name());
+        List<Ambulance> ambulances = ambulanceRepository.findAllByAmbulanceType(type);
+
+
+        return success(
+                "Ambulance list retrieved successfully",
+                new AmbulanceListResponse(
+                        metadata.getAmbulanceCount(),
+                        metadata.getDoctorCount(),
+                        ambulances.stream().map(Ambulance::toResponse).toList()
+                )
+        );
+    }
+
+    @Override
+    public ResponseEntity<?> getAmbulanceReviews(Long ambulanceId) {
+        return success(
+                "Ambulance reviews retrieved successfully",
+                ambulanceReviewRepository.findAllByAmbulance_Id(ambulanceId).stream().map(AmbulanceReview::toResponse).toList()
+        );
+    }
+
 
     private void validateCreateAmbulanceRequest(CreateAmbulanceAccountRequest body) {
         super.validateBody(body);
@@ -63,12 +91,14 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
         if (isNullOrBlank(body.getHospital_affiliation())) throw requiredField("Hospital affiliation");
         if (isNullOrBlank(body.getCoverage_areas())) throw requiredField("Coverage areas");
         if (body.getResponse_time() == null) throw requiredField("Response time");
-        if (!isValidNumber(body.getResponse_time().toString())) throw clientException("Use only number for response time");
+        if (!isValidNumber(body.getResponse_time().toString()))
+            throw clientException("Use only number for response time");
         if (!isValidNumber(body.getDoctors().toString())) throw clientException("Use only number for doctors");
         if (!isValidNumber(body.getNurses().toString())) throw clientException("Use only number for nurses");
         if (!isValidNumber(body.getParamedics().toString())) throw clientException("Use only number for paramedics");
         if (isNullOrBlank(body.getTeam_qualification())) throw requiredField("Team qualification");
-        if (!isValidNumber(body.getStarting_fee().toString())) throw clientException("Use only number for starting fee");
+        if (!isValidNumber(body.getStarting_fee().toString()))
+            throw clientException("Use only number for starting fee");
 
 
         if (ambulanceRepository.existsByAmbulanceNumber(body.getAmbulanceNumber()))

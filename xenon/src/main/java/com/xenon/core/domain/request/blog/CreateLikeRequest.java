@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class CreateLikeRequest {
 
     private Long blogId;
-    private Long userId;
 
     public Like toEntity(User user, Blog blog) {
         return new Like(user, blog);

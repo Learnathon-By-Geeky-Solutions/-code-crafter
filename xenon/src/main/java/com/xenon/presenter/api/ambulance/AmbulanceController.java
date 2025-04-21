@@ -37,9 +37,16 @@ public class AmbulanceController {
     }
     
     @GetMapping
+    @PreAuthorize(shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> getAmbulanceList(@Param("type") AmbulanceType type) {
-        return null;
+        return ambulanceService.getAmbulanceList(type);
     }
 
-
+    @GetMapping("reviews/{ambulanceId}")
+    @PreAuthorize(shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> getAmbulanceReviews(@PathVariable("ambulanceId") Long ambulanceId) {
+        return ambulanceService.getAmbulanceReviews(ambulanceId);
+    }
 }
