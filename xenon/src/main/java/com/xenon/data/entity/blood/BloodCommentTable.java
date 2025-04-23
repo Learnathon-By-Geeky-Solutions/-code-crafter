@@ -6,12 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.ZonedDateTime;
+
 @Entity
-@Table(name = "blood_response")
+@Table(name = "blood_comment_table")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BloodResponse {
+public class BloodCommentTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +30,19 @@ public class BloodResponse {
     @Column(nullable = false, length = 200)
     private String comment;
 
-    public BloodResponse(User user, BloodRequestPost bloodRequestPost, String comment) {
+    @Column(name = "created_at", updatable = false)
+    private ZonedDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private ZonedDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = ZonedDateTime.now();
+        updatedAt = ZonedDateTime.now();
+    }
+
+    public BloodCommentTable(User user, BloodRequestPost bloodRequestPost, String comment) {
         this.user = user;
         this.bloodRequestPost = bloodRequestPost;
         this.comment = comment;

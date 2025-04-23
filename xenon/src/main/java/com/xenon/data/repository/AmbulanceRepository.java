@@ -17,11 +17,11 @@ public interface AmbulanceRepository extends JpaRepository<Ambulance, Long> {
     @Query(
             value = """
                     SELECT COUNT(*)       AS ambulanceCount,
-                           COUNT(doctors) as doctorCount
+                           SUM(doctors) as doctorCount
                     FROM ambulance a
                     WHERE a.ambulance_type = :type;
                     """,
-            nativeQuery= true
+            nativeQuery = true
     )
     AmbulanceMetadataProjection getAmbulanceMetadata(@Param("type") String ambulanceType);
 

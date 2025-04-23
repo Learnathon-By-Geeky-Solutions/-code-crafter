@@ -1,6 +1,6 @@
 package com.xenon.core.domain.request.donor;
 
-import com.xenon.data.entity.donor.BloodGiven;
+import com.xenon.data.entity.donor.BloodDonationHistory;
 import com.xenon.data.entity.donor.Donor;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,14 +11,14 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BloodGivenInfoRequest {
+public class BloodDonationInfoRequest {
 
     private String patientName;
     private Integer quantity;
     private String hospitalName;
     private LocalDate lastDonation;
 
-    public BloodGiven toEntity(Donor donor) {
-        return new BloodGiven(donor, patientName, quantity, hospitalName, lastDonation);
+    public BloodDonationHistory toEntity(Donor donor) {
+        return new BloodDonationHistory(donor, patientName, quantity, hospitalName, lastDonation);
     }
 }

@@ -1,7 +1,7 @@
 package com.xenon.presenter.api.donor;
 
 import com.xenon.common.annotation.PreAuthorize;
-import com.xenon.core.domain.request.donor.BloodGivenInfoRequest;
+import com.xenon.core.domain.request.donor.BloodDonationInfoRequest;
 import com.xenon.core.domain.request.donor.CreateDonorAccountRequest;
 import com.xenon.core.service.donor.DonorService;
 import com.xenon.data.entity.user.UserRole;
@@ -30,7 +30,14 @@ public class DonorController {
     @PostMapping("blood-given")
     @PreAuthorize(authorities = {UserRole.USER, UserRole.ADMIN}, shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> bloodGiven(@Nullable @RequestBody BloodGivenInfoRequest body) {
+    public ResponseEntity<?> bloodGiven(@Nullable @RequestBody BloodDonationInfoRequest body) {
         return donorService.bloodGivenInfoRequest(body);
+    }
+
+    @GetMapping("donation-history")
+    @PreAuthorize(authorities = {UserRole.USER, UserRole.ADMIN}, shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> getDonationHistory() {
+        return donorService.getDonationHistory();
     }
 }

@@ -1,5 +1,6 @@
 package com.xenon.data.entity.blood;
 
+import com.xenon.core.domain.response.blood.BloodRequestPostResponse;
 import com.xenon.data.entity.donor.BloodType;
 import com.xenon.data.entity.location.Upazila;
 import com.xenon.data.entity.user.User;
@@ -9,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "blood_request_post")
@@ -51,6 +53,23 @@ public class BloodRequestPost {
     @Column(nullable = false, length = 100)
     private String description;
 
+    @Column(name = "created_at", updatable = false)
+    private ZonedDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private ZonedDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = ZonedDateTime.now();
+        updatedAt = ZonedDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = ZonedDateTime.now();
+    }
+
     public BloodRequestPost(User user, Upazila upazila, String patientName, BloodType bloodType, Integer quantity, String hospitalName, String description, LocalDate date, String contactNumber) {
 
         this.user = user;
@@ -62,5 +81,9 @@ public class BloodRequestPost {
         this.description = description;
         this.date = date;
         this.contactNumber = contactNumber;
+    }
+
+    public BloodRequestPostResponse toResponse() {
+        return new BloodRequestPostResponse(id, upazila, patientName, bloodType, quantity, hospitalName, date, contactNumber, description);
     }
 }
