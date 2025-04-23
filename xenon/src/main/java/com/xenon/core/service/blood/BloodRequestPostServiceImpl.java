@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,38 +58,17 @@ public class BloodRequestPostServiceImpl extends BaseService implements BloodReq
                         bloodMetaDataProjection.getTotalDonor(),
                         bloodMetaDataProjection.getTotalDonation(),
                         bloodMetaDataProjection.getTotalPost(),
-                        recentPosts.stream().map(BloodRequestPost::toResponse).toList()
+                        recentPosts.stream().map(item -> item.toResponse(null)).toList()
                 ));
     }
 
     @Override
     public ResponseEntity<?> getBloodRequestPostPage() {
         try {
-            // 1. Get post entity
-            BloodRequestPost post = bloodRequestPostRepository.findAll().stream().findFirst()
-                    .orElseThrow(() -> new ClientException("No blood request found"));
-
-            // 2. Get response count (via native projection)
-            int responseCount = bloodRequestPostRepository.getResponseCount(post.getId());
-
-            // 3. Get comments
+            List<BloodRequestPost> posts = bloodRequestPostRepository.findAll();
             List<BloodCommentTable> comments = bloodCommentRepository.findAll();
-            List<BloodRequestPostCommentResponse> commentResponses = comments.stream().map(comment ->
-                    new BloodRequestPostCommentResponse(
-                            comment.getUser().getFastName(),
-                            comment.getUser().getLastName(),
-                            comment.getComment()
-                    )).toList();
 
-            // 4. Build response DTO
-            List<BloodRequestPostResponse> postResponseList = List.of(post.toResponse());
-            BloodRequestPostDisplayResponse finalResponse = new BloodRequestPostDisplayResponse(
-                    responseCount,
-                    postResponseList,
-                    commentResponses
-            );
-
-            return success("Post details retrieved", finalResponse);
+            return success("Post details retrieved", getBloodRequestPostDisplayResponse(posts, comments));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new ApiException(e);
@@ -98,39 +78,11 @@ public class BloodRequestPostServiceImpl extends BaseService implements BloodReq
     @Override
     public ResponseEntity<?> getBloodPostPage() {
         try {
-
             List<BloodRequestPost> posts = bloodRequestPostRepository.findAllByUser_Id(getCurrentUser().getId());
-
-
-            // 2. Get all comments related to these posts
             List<Long> postIds = posts.stream().map(BloodRequestPost::getId).toList();
             List<BloodCommentTable> comments = bloodCommentRepository.findByBloodRequestPostIdIn(postIds);
 
-            // 3. Group comments by postId
-            Map<Long, List<BloodCommentTable>> commentMap = comments.stream()
-                    .collect(Collectors.groupingBy(c -> c.getBloodRequestPost().getId()));
-
-            // 4. Build response list
-            List<BloodRequestPostDisplayResponse> postResponseList = posts.stream().map(post -> {
-                List<BloodCommentTable> postComments = commentMap.getOrDefault(post.getId(), List.of());
-
-                List<BloodRequestPostCommentResponse> commentResponses = postComments.stream().map(comment ->
-                        new BloodRequestPostCommentResponse(
-                                comment.getUser().getFastName(),  // fix typo from 'FastName'
-                                comment.getUser().getLastName(),
-                                comment.getComment()
-                        )).toList();
-
-                int responseCount = postComments.size();
-
-                return new BloodRequestPostDisplayResponse(
-                        responseCount,
-                        List.of(post.toResponse()), // can also just return one element if you want
-                        commentResponses
-                );
-            }).toList();
-
-            return success("Post details retrieved", postResponseList);
+            return success("Post details retrieved", getBloodRequestPostDisplayResponse(posts, comments));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new ApiException(e);
@@ -151,6 +103,22 @@ public class BloodRequestPostServiceImpl extends BaseService implements BloodReq
         if (!PHONE_PATTERN.matcher(body.getContactNumber()).matches()) throw clientException("Invalid phone number");
         if (body.getDate() == null) throw requiredField("Date");
 
+    }
+
+    private BloodRequestPostDisplayResponse getBloodRequestPostDisplayResponse(List<BloodRequestPost> posts, List<BloodCommentTable> comments) {
+        List<BloodRequestPostResponse> bloodRequestPostResponseList = posts
+                .stream()
+                .map(item -> item.toResponse(comments.stream()
+                        .filter(comment -> comment.getBloodRequestPost().getId().equals(item.getId()))
+                        .map(comment2 -> new BloodRequestPostCommentResponse(
+                                comment2.getUser().getFastName(),
+                                comment2.getUser().getLastName(),
+                                comment2.getComment()
+                        )).toList())).toList();
+        return new BloodRequestPostDisplayResponse(
+                comments.size(),
+                bloodRequestPostResponseList
+        );
     }
 }
 

@@ -1,5 +1,6 @@
 package com.xenon.data.entity.blood;
 
+import com.xenon.core.domain.response.blood.BloodRequestPostCommentResponse;
 import com.xenon.core.domain.response.blood.BloodRequestPostResponse;
 import com.xenon.data.entity.donor.BloodType;
 import com.xenon.data.entity.location.Upazila;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "blood_request_post")
@@ -83,7 +85,7 @@ public class BloodRequestPost {
         this.contactNumber = contactNumber;
     }
 
-    public BloodRequestPostResponse toResponse() {
-        return new BloodRequestPostResponse(id, upazila, patientName, bloodType, quantity, hospitalName, date, contactNumber, description);
+    public BloodRequestPostResponse toResponse(List<BloodRequestPostCommentResponse> commentResponses) {
+        return new BloodRequestPostResponse(id, upazila, patientName, bloodType, quantity, hospitalName, date, contactNumber, description, commentResponses);
     }
 }
