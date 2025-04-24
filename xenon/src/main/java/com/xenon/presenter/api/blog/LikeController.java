@@ -1,11 +1,8 @@
 package com.xenon.presenter.api.blog;
 
 import com.xenon.common.annotation.PreAuthorize;
-import com.xenon.core.domain.request.blog.CreateLikeRequest;
 import com.xenon.core.service.blog.LikeService;
-import com.xenon.data.entity.user.UserRole;
 import com.xenon.presenter.config.SecurityConfiguration;
-import io.micrometer.common.lang.Nullable;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +16,23 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    @PostMapping("create")
-    @PreAuthorize(authorities = {UserRole.USER, UserRole.DOCTOR, UserRole.ADMIN}, shouldCheckAccountStatus = true)
+
+    @PostMapping("create/blogs/{blogId}/like")
+    @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> create(@Nullable @RequestBody CreateLikeRequest body) {
-        return likeService.createLikeRequest(body);
+    public ResponseEntity<?> toggleLike(@PathVariable Long blogId) {
+        return likeService.toggleLike(blogId);
+    }
+
+    @GetMapping("/blogs/{blogId}/like/status")
+    @PreAuthorize(shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> getLikeStatus(@PathVariable Long blogId) {
+        return likeService.getLikeStatus(blogId);
+    }
+
+    @GetMapping("/blogs/{blogId}/likes")
+    public ResponseEntity<?> getLikesByBlogId(@PathVariable Long blogId) {
+        return likeService.getLikesByBlogId(blogId);
     }
 }

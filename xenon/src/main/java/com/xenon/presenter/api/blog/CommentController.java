@@ -1,7 +1,7 @@
 package com.xenon.presenter.api.blog;
 
 import com.xenon.common.annotation.PreAuthorize;
-import com.xenon.core.domain.request.blog.CreateCommentRequest;
+import com.xenon.core.domain.request.blog.comment.CreateCommentRequest;
 import com.xenon.core.service.blog.CommentService;
 import com.xenon.data.entity.user.UserRole;
 import com.xenon.presenter.config.SecurityConfiguration;
@@ -19,11 +19,32 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("create")
-    @PreAuthorize(authorities = {UserRole.USER,UserRole.DOCTOR, UserRole.ADMIN}, shouldCheckAccountStatus = true)
+    @PostMapping("create/{blogId}/comments")
+    @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> create(@Nullable @RequestBody CreateCommentRequest body) {
-        return commentService.createCommentRequest(body);
+    public ResponseEntity<?> createCommentRequest(@PathVariable Long blogId, @Nullable @RequestBody CreateCommentRequest body) {
+        return commentService.createCommentRequest(blogId, body);
+    }
+
+    @GetMapping("/blogs/{blogId}/comments")
+    @PreAuthorize(shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> getCommentsByBlogId(@PathVariable Long blogId) {
+        return commentService.getCommentsByBlogId(blogId);
+    }
+
+    @PutMapping("/comments/{commentId}")
+    @PreAuthorize(shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> updateComment(@PathVariable Long commentId, @RequestBody CreateCommentRequest body) {
+        return commentService.updateComment(commentId, body);
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    @PreAuthorize(shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId) {
+        return commentService.deleteComment(commentId);
     }
 
 }

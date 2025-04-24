@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -32,7 +31,7 @@ public class Blog {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private POST_CATEGORY category;
+    private PostCategory category;
 
     @Column(length = 255)
     private String media;
@@ -54,7 +53,7 @@ public class Blog {
         updatedAt = ZonedDateTime.now();
     }
 
-    public Blog(String title, String content, POST_CATEGORY category, String media, User user) {
+    public Blog(String title, String content, PostCategory category, String media, User user) {
         this.title = title;
         this.content = content;
         this.category = category;
