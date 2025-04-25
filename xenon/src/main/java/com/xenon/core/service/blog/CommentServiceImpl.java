@@ -41,7 +41,7 @@ public class CommentServiceImpl extends BaseService implements CommentService {
             CommentResponseRequest commentResponseRequest = new CommentResponseRequest(
                     comment.getId(),
                     getCurrentUser().getId(),
-                    getCurrentUser().getFastName() + " " + getCurrentUser().getLastName(),
+                    getCurrentUser().getFirstName() + " " + getCurrentUser().getLastName(),
                     comment.getContent(),
                     comment.getCreatedAt()
             );
@@ -64,7 +64,7 @@ public class CommentServiceImpl extends BaseService implements CommentService {
                 .map(comment -> new CommentResponseRequest(
                         comment.getId(),
                         comment.getUser().getId(),
-                        comment.getUser().getFastName() + " " + comment.getUser().getLastName(),
+                        comment.getUser().getFirstName() + " " + comment.getUser().getLastName(),
                         comment.getContent(),
                         comment.getCreatedAt()
                 ))
@@ -92,7 +92,7 @@ public class CommentServiceImpl extends BaseService implements CommentService {
             CommentResponseRequest commentResponseRequest = new CommentResponseRequest(
                     comment.getId(),
                     getCurrentUser().getId(),
-                    getCurrentUser().getFastName() + " " + getCurrentUser().getLastName(),
+                    getCurrentUser().getFirstName() + " " + getCurrentUser().getLastName(),
                     comment.getContent(),
                     comment.getCreatedAt());
 

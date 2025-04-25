@@ -1,23 +1,21 @@
-package com.xenon.core.domain.response.doctor;
+package com.xenon.core.domain.request.doctor;
 
-import com.xenon.core.domain.response.user.UserResponse;
+import com.xenon.data.entity.doctor.Doctor;
 import com.xenon.data.entity.doctor.DoctorTitle;
-import com.xenon.data.entity.doctor.DoctorType;
 import com.xenon.data.entity.doctor.SpecialistCategory;
+import com.xenon.data.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
-public class DoctorResponse {
-    private Long id;
-    private UserResponse user;
+@AllArgsConstructor
+@NoArgsConstructor
+public class DoctorProfileRequest {
+
     private DoctorTitle doctorTitle;
-    private DoctorType doctorType;
     private SpecialistCategory specialistCategory;
     private LocalDate dateOfBirth;
     private String nid;
@@ -32,4 +30,8 @@ public class DoctorResponse {
     private String experienceInfo;
     private String awards;
     private String publications;
+
+    public Doctor toEntity(User user) {
+        return new Doctor(doctorTitle, specialistCategory, dateOfBirth, nid, passport, registrationNo, experience, hospital, about, areaOfExpertise, patientCarePolicy, education, experienceInfo, awards, publications, user);
+    }
 }

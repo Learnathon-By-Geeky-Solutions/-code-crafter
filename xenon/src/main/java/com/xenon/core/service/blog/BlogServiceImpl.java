@@ -192,7 +192,7 @@ public class BlogServiceImpl extends BaseService implements BlogService {
                 .map(comment -> new CommentResponseRequest(
                         comment.getId(),
                         comment.getUser().getId(),
-                        comment.getUser().getFastName() + " " + comment.getUser().getLastName(),
+                        comment.getUser().getFirstName() + " " + comment.getUser().getLastName(),
                         comment.getContent(),
                         comment.getCreatedAt()
                 ))
@@ -201,7 +201,7 @@ public class BlogServiceImpl extends BaseService implements BlogService {
         return new BlogResponseRequest(
                 blogId,
                 blog.getUser().getId(),
-                blog.getUser().getFastName() + " " + blog.getUser().getLastName(),
+                blog.getUser().getFirstName() + " " + blog.getUser().getLastName(),
                 blog.getTitle(),
                 blog.getContent(),
                 blog.getCategory(),

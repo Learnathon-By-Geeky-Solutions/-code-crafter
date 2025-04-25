@@ -19,10 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -111,7 +108,7 @@ public class BloodRequestPostServiceImpl extends BaseService implements BloodReq
                 .map(item -> item.toResponse(comments.stream()
                         .filter(comment -> comment.getBloodRequestPost().getId().equals(item.getId()))
                         .map(comment2 -> new BloodRequestPostCommentResponse(
-                                comment2.getUser().getFastName(),
+                                comment2.getUser().getFirstName(),
                                 comment2.getUser().getLastName(),
                                 comment2.getComment()
                         )).toList())).toList();

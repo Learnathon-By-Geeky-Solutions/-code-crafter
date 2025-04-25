@@ -1,7 +1,7 @@
-package com.xenon.core.domain.request.consultation;
+package com.xenon.core.domain.request.consultation.emergency;
 
-import com.xenon.data.entity.consultation.EmergencyConsultation;
-import com.xenon.data.entity.consultation.EmergencyConsultationAppointmentTable;
+import com.xenon.data.entity.consultation.emergency.EmergencyConsultation;
+import com.xenon.data.entity.consultation.emergency.EmergencyConsultationAppointmentTable;
 import com.xenon.data.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;

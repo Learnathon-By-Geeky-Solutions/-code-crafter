@@ -1,6 +1,6 @@
 package com.xenon.data.entity.doctor;
 
-import com.xenon.core.domain.response.doctor.DoctorResponse;
+import com.xenon.core.domain.response.doctor.DoctorProfileResponse;
 import com.xenon.data.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,10 +27,6 @@ public class Doctor {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private DoctorTitle doctorTitle;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
-    private DoctorType doctorType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 40)
@@ -75,9 +71,8 @@ public class Doctor {
     @Column(length = 1000)
     private String publications;
 
-    public Doctor(DoctorTitle doctorTitle, DoctorType doctorType, SpecialistCategory specialistCategory, LocalDate dateOfBirth, String nid, String passport, String registrationNo, Integer experience, String hospital, String about, String areaOfExpertise, String patientCarePolicy, String education, String experienceInfo, String awards, String publications, User user) {
+    public Doctor(DoctorTitle doctorTitle, SpecialistCategory specialistCategory, LocalDate dateOfBirth, String nid, String passport, String registrationNo, Integer experience, String hospital, String about, String areaOfExpertise, String patientCarePolicy, String education, String experienceInfo, String awards, String publications, User user) {
         this.doctorTitle = doctorTitle;
-        this.doctorType = doctorType;
         this.specialistCategory = specialistCategory;
         this.dateOfBirth = dateOfBirth;
         this.nid = nid;
@@ -95,7 +90,8 @@ public class Doctor {
         this.user = user;
     }
 
-    public DoctorResponse toResponse() {
-        return new DoctorResponse(id, user.toResponse(), doctorTitle, doctorType, specialistCategory, dateOfBirth, nid, passport, registrationNo, experience, hospital, about, areaOfExpertise, patientCarePolicy, education, experienceInfo, awards, publications);
+    public DoctorProfileResponse toResponse() {
+     //   return new DoctorProfileResponse(id, user.toResponse(), doctorTitle, specialistCategory, dateOfBirth, nid, passport, registrationNo, experience, hospital, about, areaOfExpertise, patientCarePolicy, education, experienceInfo, awards, publications);
+        return null;
     }
 }

@@ -42,9 +42,8 @@ public class HealthAuthorizationServiceImpl extends BaseService implements Healt
         validateCreateAlertRequest(body);
 
         HealthAuthorization healthAuthorization = healthAuthorizationRepository.findByUserId(getCurrentUser().getId()).orElseThrow(() -> new ClientException("Health Authorization not found"));//.orElseThrow(() -> new ClientException("Health Authorization not found"));
-        Upazila upazila = upazilaRepository.findById(body.getUpazilaId()).orElseThrow(() -> new ClientException("No upazila Found"));
         try {
-            alterTableRepository.save(body.toEntity(healthAuthorization, upazila));
+            alterTableRepository.save(body.toEntity(healthAuthorization));
             return success("Alert created successfully", null);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -72,7 +71,6 @@ public class HealthAuthorizationServiceImpl extends BaseService implements Healt
         if (isNullOrBlank(body.getTitle())) throw requiredField("Title");
         if (isNullOrBlank(body.getDescription())) throw requiredField("Description");
         if (isNullOrBlank(body.getAlertness())) throw requiredField("Alertness");
-        if (isNullOrBlank(String.valueOf(body.getUpazilaId()))) throw requiredField("Location");
     }
 
 }

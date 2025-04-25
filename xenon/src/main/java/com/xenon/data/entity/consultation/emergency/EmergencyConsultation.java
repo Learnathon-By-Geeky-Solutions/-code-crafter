@@ -1,4 +1,4 @@
-package com.xenon.data.entity.consultation;
+package com.xenon.data.entity.consultation.emergency;
 
 import com.xenon.core.domain.response.emergencyConsultation.EmergencyConsultationResponse;
 import com.xenon.data.entity.doctor.Doctor;
@@ -37,10 +37,11 @@ public class EmergencyConsultation {
     }
 
     public EmergencyConsultationResponse toResponse() {
-        return new EmergencyConsultationResponse(
+        /*return new EmergencyConsultationResponse(
                 doctor.toResponse(),
                 availability,
                 fee
-        );
+        );*/
+        return null;
     }
 }

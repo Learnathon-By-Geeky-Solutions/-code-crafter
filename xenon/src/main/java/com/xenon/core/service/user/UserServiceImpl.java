@@ -5,6 +5,7 @@ import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.request.hospital.CreateAppointmentTableRequest;
 import com.xenon.core.domain.request.user.CreateAccountRequest;
 import com.xenon.core.domain.request.user.UpdateAccountRequest;
+import com.xenon.core.domain.request.user.UpdateUserLatitudeLongitude;
 import com.xenon.core.service.BaseService;
 import com.xenon.data.entity.location.Upazila;
 import com.xenon.data.entity.user.User;
@@ -16,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -47,7 +47,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         User user = getCurrentUser();
 
-        user.setFastName(body.getFastName());
+        user.setFirstName(body.getFirstName());
         user.setLastName(body.getLastName());
         user.setEmail(body.getEmail());
         user.setGender(body.getGender());
@@ -69,6 +69,21 @@ public class UserServiceImpl extends BaseService implements UserService {
         return success("User profile has been retrieved successfully", getCurrentUser().toResponse());
     }
 
+    @Override
+    public ResponseEntity<?> updateLatitudeLongitude(UpdateUserLatitudeLongitude body) {
+
+        User user = getCurrentUser();
+
+        user.setLatitude(body.getLatitude());
+        user.setLongitude(body.getLongitude());
+        try {
+            userRepository.save(user);
+            return success("Location updated successfully", null);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
 
 
     private void validateCreateAccountRequest(CreateAccountRequest body) {
@@ -89,7 +104,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     private void validateUpdateAccountRequest(UpdateAccountRequest body) {
         super.validateBody(body);
 
-        if (isNullOrBlank(body.getFastName())) throw requiredField("First name");
+        if (isNullOrBlank(body.getFirstName())) throw requiredField("First name");
         if (isNullOrBlank(body.getLastName())) throw requiredField("Last name");
         if (isNullOrBlank(body.getEmail())) throw requiredField("Email");
         if (!EMAIL_PATTERN.matcher(body.getEmail()).matches()) throw clientException("Invalid email");

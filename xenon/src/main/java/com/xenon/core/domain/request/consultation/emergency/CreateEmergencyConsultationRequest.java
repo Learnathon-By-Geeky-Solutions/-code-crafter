@@ -1,6 +1,6 @@
-package com.xenon.core.domain.request.consultation;
+package com.xenon.core.domain.request.consultation.emergency;
 
-import com.xenon.data.entity.consultation.EmergencyConsultation;
+import com.xenon.data.entity.consultation.emergency.EmergencyConsultation;
 import com.xenon.data.entity.doctor.Doctor;
 import com.xenon.data.entity.hospital.AVAILABILITY;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateEmergencyConsultationRequest {
 
-    private Long doctor;
+    private Long doctorId;
     private AVAILABILITY availability;
     private Integer fee;
 

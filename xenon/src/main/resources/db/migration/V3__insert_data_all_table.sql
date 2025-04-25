@@ -1,4 +1,4 @@
-INSERT INTO table_user (fast_name, last_name, phone, email, password, role, status, upazila_id, area, latitude,
+INSERT INTO table_user (first_name, last_name, phone, email, password, role, status, upazila_id, area, latitude,
                         longitude, gender)
 VALUES
 -- USER
@@ -251,7 +251,7 @@ VALUES (1, -- assuming doctor_id 1 exists in the doctor table
 INSERT INTO specialist_consultation (doctor_id,
                                      status,
                                      availability,
-                                     date,
+                                     day_date,
                                      start_time,
                                      end_time,
                                      duration,
@@ -259,7 +259,7 @@ INSERT INTO specialist_consultation (doctor_id,
 VALUES (1, -- assuming doctor_id 1 exists in the doctor table
         'ACTIVE', -- status of the consultation, could be 'ACTIVE' or 'INACTIVE'
         'AVAILABLE', -- availability status, could be 'AVAILABLE' or 'UNAVAILABLE'
-        '2025-05-01', -- date of consultation
+        'MONDAY', -- date of consultation
         '10:00:00', -- start time of consultation
         '12:00:00', -- end time of consultation
         120, -- duration in minutes (e.g., 2 hours = 120 minutes)

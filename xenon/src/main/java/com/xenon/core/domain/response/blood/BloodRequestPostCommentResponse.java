@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BloodRequestPostCommentResponse {
 
-    private String userFastName;
+    private String userFirstName;
     private String userLastName;
     private String content;
 }

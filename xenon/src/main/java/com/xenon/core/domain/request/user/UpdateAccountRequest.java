@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateAccountRequest {
-    private String fastName;
+    private String firstName;
     private String lastName;
     private String email;
     private Long upazilaId;

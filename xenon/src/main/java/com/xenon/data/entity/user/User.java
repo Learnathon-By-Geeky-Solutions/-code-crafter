@@ -23,7 +23,7 @@ public class User {
     private Long id;
 
     @Column(length = 30)
-    private String fastName;
+    private String firstName;
 
     @Column(length = 30)
     private String lastName;
@@ -87,7 +87,7 @@ public class User {
     public UserResponse toResponse() {
         return new UserResponse(
                 this.id,
-                this.fastName,
+                this.firstName,
                 this.lastName,
                 this.phone,
                 this.email,

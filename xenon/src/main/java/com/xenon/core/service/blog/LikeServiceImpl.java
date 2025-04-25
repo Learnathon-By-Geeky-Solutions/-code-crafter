@@ -75,7 +75,7 @@ public class LikeServiceImpl extends BaseService implements LikeService {
         List<UserResponseRequest> userResponseRequests = likes.stream()
                 .map(like -> new UserResponseRequest(
                         like.getUser().getId(),
-                        like.getUser().getFastName(),
+                        like.getUser().getFirstName(),
                         like.getUser().getLastName(),
                         like.getUser().getEmail()
                 ))

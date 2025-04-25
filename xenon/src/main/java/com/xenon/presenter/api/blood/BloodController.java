@@ -32,7 +32,7 @@ public class BloodController {
     @PostMapping("create-comment")
     @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> createBloodResponse(@io.micrometer.common.lang.Nullable @RequestBody CreateBloodCommentRequest body) {
+    public ResponseEntity<?> createBloodResponse(@Nullable @RequestBody CreateBloodCommentRequest body) {
         return bloodCommentService.createBloodCommentRequest(body);
     }
 

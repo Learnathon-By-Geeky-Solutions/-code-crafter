@@ -1,7 +1,7 @@
 package com.xenon.presenter.api.doctor;
 
 import com.xenon.common.annotation.PreAuthorize;
-import com.xenon.core.domain.request.doctor.CreateDoctorProfileRequest;
+import com.xenon.core.domain.request.doctor.DoctorProfileRequest;
 import com.xenon.core.service.doctor.DoctorService;
 import com.xenon.data.entity.user.UserRole;
 import com.xenon.presenter.config.SecurityConfiguration;
@@ -22,7 +22,7 @@ public class DoctorController {
     @PostMapping("create")
     @PreAuthorize(authorities = {UserRole.DOCTOR, UserRole.ADMIN}, shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> create(@Nullable @RequestBody CreateDoctorProfileRequest body) {
+    public ResponseEntity<?> create(@Nullable @RequestBody DoctorProfileRequest body) {
         return doctorService.createDoctorProfileRequest(body);
     }
 }

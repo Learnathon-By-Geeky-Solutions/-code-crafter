@@ -1,7 +1,7 @@
 package com.xenon.core.service.doctor;
 
 import com.xenon.core.domain.exception.ApiException;
-import com.xenon.core.domain.request.doctor.CreateDoctorProfileRequest;
+import com.xenon.core.domain.request.doctor.DoctorProfileRequest;
 import com.xenon.core.service.BaseService;
 import com.xenon.data.repository.DoctorRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class DoctorServiceImpl extends BaseService implements DoctorService {
 
 
     @Override
-    public ResponseEntity<?> createDoctorProfileRequest(CreateDoctorProfileRequest body) {
+    public ResponseEntity<?> createDoctorProfileRequest(DoctorProfileRequest body) {
         validateCreateDoctorAccountRequest(body);
 
         try {
@@ -30,11 +30,20 @@ public class DoctorServiceImpl extends BaseService implements DoctorService {
         }
     }
 
-    private void validateCreateDoctorAccountRequest(CreateDoctorProfileRequest body) {
+    @Override
+    public ResponseEntity<?> getDoctorProfile(Long doctorId) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<?> updateDoctorProfile(Long doctorId, DoctorProfileRequest body) {
+        return null;
+    }
+
+    private void validateCreateDoctorAccountRequest(DoctorProfileRequest body) {
         super.validateBody(body);
 
         if (body.getDoctorTitle() == null) throw requiredField("Doctor Title");
-        if (body.getDoctorType() == null) throw requiredField("Doctor Type");
         if (body.getSpecialistCategory() == null) throw requiredField("Specialist Category");
         if (body.getDateOfBirth() == null) throw requiredField("Date of Birth");
         if (isNullOrBlank(body.getNid()) && isNullOrBlank(body.getPassport())) throw requiredField("NID/Passport");

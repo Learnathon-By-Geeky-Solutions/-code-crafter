@@ -1,7 +1,7 @@
 package com.xenon.core.domain.request.hospital;
 
 import com.xenon.data.entity.hospital.DoctorSchedule;
-import com.xenon.data.entity.hospital.OfflineAppointmentTable;
+import com.xenon.data.entity.hospital.offlineBooking.OfflineAppointmentTable;
 import com.xenon.data.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;

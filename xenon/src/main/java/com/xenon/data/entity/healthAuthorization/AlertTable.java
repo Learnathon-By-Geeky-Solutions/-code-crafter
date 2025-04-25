@@ -1,7 +1,5 @@
 package com.xenon.data.entity.healthAuthorization;
 
-import com.xenon.data.entity.location.Upazila;
-import com.xenon.data.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,10 +20,6 @@ public class AlertTable {
     @JoinColumn(name = "health_authorization_id")
     private HealthAuthorization healthAuthorization;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "upazila_id", unique = true, nullable = false)
-    private Upazila upazila;
-
     @Column(length = 250)
     private String title;
 
@@ -35,12 +29,24 @@ public class AlertTable {
     @Column(length = 1000)
     private String alertness;
 
+    @Column(nullable = false)
+    private double latitude;
 
-    public AlertTable(String title, String description, String alertness, Upazila upazila, HealthAuthorization healthAuthorization) {
+
+    @Column(nullable = false)
+    private double longitude;
+
+    @Column
+    private double radius;
+
+
+    public AlertTable(String title, String description, String alertness, HealthAuthorization healthAuthorization, double latitude, double longitude, double radius) {
         this.title = title;
         this.description = description;
         this.alertness = alertness;
-        this.upazila = upazila;
         this.healthAuthorization = healthAuthorization;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.radius = radius;
     }
 }

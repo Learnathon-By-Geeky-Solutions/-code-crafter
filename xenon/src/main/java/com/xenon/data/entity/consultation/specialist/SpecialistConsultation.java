@@ -1,13 +1,14 @@
-package com.xenon.data.entity.consultation;
+package com.xenon.data.entity.consultation.specialist;
 
+import com.xenon.data.entity.consultation.STATUS;
 import com.xenon.data.entity.doctor.Doctor;
 import com.xenon.data.entity.hospital.AVAILABILITY;
+import com.xenon.data.entity.hospital.DAY;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
@@ -34,7 +35,7 @@ public class SpecialistConsultation {
     private AVAILABILITY availability;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private DAY day;
 
     @Column(nullable = false)
     private LocalTime startTime;
@@ -50,11 +51,11 @@ public class SpecialistConsultation {
 
 
 
-    public SpecialistConsultation(Doctor doctor, STATUS status, AVAILABILITY availability, LocalDate date, LocalTime startTime, LocalTime endTime, Integer duration, Integer fee) {
+    public SpecialistConsultation(Doctor doctor, STATUS status, AVAILABILITY availability, DAY date, LocalTime startTime, LocalTime endTime, Integer duration, Integer fee) {
         this.doctor = doctor;
         this.status = status;
         this.availability = availability;
-        this.date = date;
+        this.day = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.duration = duration;
