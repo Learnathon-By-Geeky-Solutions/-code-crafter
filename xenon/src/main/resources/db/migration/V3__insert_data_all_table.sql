@@ -33,7 +33,10 @@ VALUES
 
 -- PHARMACY
 ('Medi', 'Plus', '01788888888', 'pharmacy@example.com', '222222', 'PHARMACY', 'ACTIVE', 8, 'Shantinagar, Dhaka',
- 23.7415, 90.4167, 'OTHER');
+ 23.7415, 90.4167, 'OTHER'),
+
+('Health', 'Plus', '01788988888', 'health@example.com', '222222', 'HEALTH_AUTHORIZATION', 'ACTIVE', 8, 'Shantinagar, Dhaka',
+    23.7415, 90.4167, 'OTHER');
 
 
 

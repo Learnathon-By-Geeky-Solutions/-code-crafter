@@ -369,23 +369,5 @@ CREATE TABLE emergency_appointment_table
         ON DELETE SET NULL
 );
 
-CREATE TABLE health_authority
-(
-    id              BIGSERIAL PRIMARY KEY,
-    registration_no VARCHAR(30) NOT NULL UNIQUE
-);
 
-CREATE TABLE alert
-(
-    id                  BIGSERIAL PRIMARY KEY,
-    health_authority_id BIGINT           NOT NULL,
-    title               VARCHAR(100)     NOT NULL,
-    description         VARCHAR(1000)    NOT NULL,
-    alertness           VARCHAR(1000)    NOT NULL,
-    latitude            DOUBLE PRECISION NOT NULL,
-    longitude           DOUBLE PRECISION NOT NULL,
-    radius              DOUBLE PRECISION NOT NULL,
-    created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (health_authority_id) REFERENCES health_authority (id) ON DELETE SET NULL
-);
