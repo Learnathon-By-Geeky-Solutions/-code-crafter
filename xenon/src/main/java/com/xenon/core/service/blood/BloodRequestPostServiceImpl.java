@@ -3,6 +3,7 @@ package com.xenon.core.service.blood;
 import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.request.blood.CreateBloodRequestPost;
+import com.xenon.core.domain.response.PageResponseRequest;
 import com.xenon.core.domain.response.blood.BloodDashBoardResponse;
 import com.xenon.core.domain.response.blood.BloodRequestPostCommentResponse;
 import com.xenon.core.domain.response.blood.BloodRequestPostDisplayResponse;
@@ -11,15 +12,19 @@ import com.xenon.core.domain.response.blood.projection.BloodMetaDataProjection;
 import com.xenon.core.service.BaseService;
 import com.xenon.data.entity.blood.BloodCommentTable;
 import com.xenon.data.entity.blood.BloodRequestPost;
+import com.xenon.data.entity.donor.BloodType;
 import com.xenon.data.entity.location.Upazila;
 import com.xenon.data.repository.BloodCommentRepository;
 import com.xenon.data.repository.BloodRequestPostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -60,12 +65,28 @@ public class BloodRequestPostServiceImpl extends BaseService implements BloodReq
     }
 
     @Override
-    public ResponseEntity<?> getBloodRequestPostPage() {
+    public ResponseEntity<?> getBloodRequestPostPage(Pageable pageable) {
         try {
-            List<BloodRequestPost> posts = bloodRequestPostRepository.findAll();
-            List<BloodCommentTable> comments = bloodCommentRepository.findAll();
+            Page<BloodRequestPost> postsPage = bloodRequestPostRepository.findAllByOrderByDateDesc(pageable);
+            List<Long> postIds = postsPage.getContent().stream()
+                    .map(BloodRequestPost::getId)
+                    .collect(Collectors.toList());
 
-            return success("Post details retrieved", getBloodRequestPostDisplayResponse(posts, comments));
+            List<BloodCommentTable> comments = bloodCommentRepository.findByBloodRequestPostIdIn(postIds);
+
+            List<BloodRequestPostResponse> responses = postsPage.getContent().stream()
+                    .map(post -> post.toResponse(getPostComments(comments, post.getId())))
+                    .collect(Collectors.toList());
+
+            PageResponseRequest<BloodRequestPostResponse> pageResponse = new PageResponseRequest<>(
+                    responses,
+                    postsPage.getNumber(),
+                    postsPage.getSize(),
+                    postsPage.getTotalElements(),
+                    postsPage.getTotalPages()
+            );
+
+            return success("Blood request posts retrieved successfully", pageResponse);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new ApiException(e);
@@ -73,17 +94,132 @@ public class BloodRequestPostServiceImpl extends BaseService implements BloodReq
     }
 
     @Override
-    public ResponseEntity<?> getBloodPostPage() {
+    public ResponseEntity<?> getBloodPostPage(Pageable pageable) {
         try {
-            List<BloodRequestPost> posts = bloodRequestPostRepository.findAllByUser_Id(getCurrentUser().getId());
-            List<Long> postIds = posts.stream().map(BloodRequestPost::getId).toList();
+            Page<BloodRequestPost> postsPage = bloodRequestPostRepository.findAllByUser_Id(
+                    getCurrentUser().getId(), pageable);
+
+            List<Long> postIds = postsPage.getContent().stream()
+                    .map(BloodRequestPost::getId)
+                    .collect(Collectors.toList());
+
             List<BloodCommentTable> comments = bloodCommentRepository.findByBloodRequestPostIdIn(postIds);
 
-            return success("Post details retrieved", getBloodRequestPostDisplayResponse(posts, comments));
+            List<BloodRequestPostResponse> responses = postsPage.getContent().stream()
+                    .map(post -> post.toResponse(getPostComments(comments, post.getId())))
+                    .collect(Collectors.toList());
+
+            PageResponseRequest<BloodRequestPostResponse> pageResponse = new PageResponseRequest<>(
+                    responses,
+                    postsPage.getNumber(),
+                    postsPage.getSize(),
+                    postsPage.getTotalElements(),
+                    postsPage.getTotalPages()
+            );
+
+            return success("User blood request posts retrieved successfully", pageResponse);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new ApiException(e);
         }
+    }
+
+    @Override
+    public ResponseEntity<?> getBloodRequestsByType(BloodType bloodType, Pageable pageable) {
+        try {
+            Page<BloodRequestPost> postsPage = bloodRequestPostRepository.findAllByBloodType(bloodType, pageable);
+
+            PageResponseRequest<BloodRequestPostResponse> pageResponse = createPostsPageResponse(postsPage);
+
+            return success("Blood requests by type retrieved successfully", pageResponse);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getBloodRequestsByLocation(Long upazilaId, Pageable pageable) {
+        try {
+            Page<BloodRequestPost> postsPage = bloodRequestPostRepository.findAllByUpazila_Id(upazilaId, pageable);
+
+            PageResponseRequest<BloodRequestPostResponse> pageResponse = createPostsPageResponse(postsPage);
+
+            return success("Blood requests by location retrieved successfully", pageResponse);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getBloodRequestsByTypeAndLocation(BloodType bloodType, Long upazilaId, Pageable pageable) {
+        try {
+            Page<BloodRequestPost> postsPage = bloodRequestPostRepository
+                    .findAllByBloodTypeAndUpazila_Id(bloodType, upazilaId, pageable);
+
+            PageResponseRequest<BloodRequestPostResponse> pageResponse = createPostsPageResponse(postsPage);
+
+            return success("Blood requests by type and location retrieved successfully", pageResponse);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getBloodRequestDetails(Long requestId) {
+        try {
+            BloodRequestPost post = bloodRequestPostRepository.findById(requestId)
+                    .orElseThrow(() -> new ClientException("Blood request not found"));
+
+            List<BloodCommentTable> comments = bloodCommentRepository.findByBloodRequestPostId(requestId);
+
+            List<BloodRequestPostCommentResponse> commentResponses = comments.stream()
+                    .map(comment -> new BloodRequestPostCommentResponse(
+                            comment.getUser().getFirstName(),
+                            comment.getUser().getLastName(),
+                            comment.getComment()
+                    )).collect(Collectors.toList());
+
+            return success("Blood request details retrieved successfully",
+                    post.toResponse(commentResponses));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
+
+    private PageResponseRequest<BloodRequestPostResponse> createPostsPageResponse(Page<BloodRequestPost> postsPage) {
+        List<Long> postIds = postsPage.getContent().stream()
+                .map(BloodRequestPost::getId)
+                .collect(Collectors.toList());
+
+        List<BloodCommentTable> comments = bloodCommentRepository.findByBloodRequestPostIdIn(postIds);
+
+        List<BloodRequestPostResponse> responses = postsPage.getContent().stream()
+                .map(post -> post.toResponse(getPostComments(comments, post.getId())))
+                .collect(Collectors.toList());
+
+        return new PageResponseRequest<>(
+                responses,
+                postsPage.getNumber(),
+                postsPage.getSize(),
+                postsPage.getTotalElements(),
+                postsPage.getTotalPages()
+        );
+    }
+
+    private List<BloodRequestPostCommentResponse> getPostComments(
+            List<BloodCommentTable> allComments, Long postId) {
+        return allComments.stream()
+                .filter(comment -> comment.getBloodRequestPost().getId().equals(postId))
+                .map(comment -> new BloodRequestPostCommentResponse(
+                        comment.getUser().getFirstName(),
+                        comment.getUser().getLastName(),
+                        comment.getComment()
+                ))
+                .collect(Collectors.toList());
     }
 
     private void validateCreateBloodRequestPost(CreateBloodRequestPost body) {

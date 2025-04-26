@@ -47,4 +47,6 @@ public class BloodDonationHistory {
     public BloodDonationHistoryResponse toResponse() {
         return new BloodDonationHistoryResponse(patientName, quantity, hospitalName, lastDonation);
     }
+
+
 }

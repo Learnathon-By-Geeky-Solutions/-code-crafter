@@ -10,6 +10,5 @@ import java.util.List;
 public interface BloodCommentRepository extends JpaRepository<BloodCommentTable, Long> {
     List<BloodCommentTable> findByBloodRequestPostIdIn(List<Long> postIds);
 
-//    List<BloodCommentTable> findByBloodRequestPostId(Long postId);
-
+    List<BloodCommentTable> findByBloodRequestPostId(Long postId);
 }

@@ -17,4 +17,24 @@ public interface BlogService {
     ResponseEntity<?> updateBlog(Long id, BlogPostRequest body);
 
     ResponseEntity<?> deleteBlog(Long id);
+
+    ResponseEntity<?> getBlogById(Long id);
+
+    // New methods for enhanced functionality
+    ResponseEntity<?> searchBlogs(String query, Pageable pageable);
+
+    ResponseEntity<?> searchBlogsByCategory(String query, String category, Pageable pageable);
+
+    ResponseEntity<?> getTrendingBlogs(String trendingBy, Pageable pageable);
+
+    ResponseEntity<?> getFeaturedBlogs(Pageable pageable);
+
+    ResponseEntity<?> getFeaturedBlogsByCategory(String category, Pageable pageable);
+
+    @Transactional
+    ResponseEntity<?> setFeaturedStatus(Long id, boolean isFeatured);
+
+    // View count increment
+    @Transactional
+    ResponseEntity<?> incrementViewCount(Long id);
 }

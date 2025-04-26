@@ -17,13 +17,18 @@ public class BlogResponseRequest {
     private Long blogId;
     private Long userId;
     private String userName;
+    private String userRole;  // Added to identify if content is from doctor
     private String title;
     private String content;
     private PostCategory category;
+    private String doctorCategory;  // For doctor articles
     private String media;
     private long commentCount;
     private long likeCount;
+    private int viewCount;
+    private boolean isFeatured;
     private List<CommentResponseRequest> commentResponseLists;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
+    private String doctorCredentials;  // Only for doctor articles
 }

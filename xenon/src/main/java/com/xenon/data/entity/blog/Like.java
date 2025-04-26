@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.ZonedDateTime;
+
 @Entity
 @Table(name = "blog_like")
 @Data
@@ -24,6 +26,14 @@ public class Like {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID")
     private User user;
+
+    @Column(name = "created_at", updatable = false)
+    private ZonedDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = ZonedDateTime.now();
+    }
 
     public Like(User user, Blog blog) {
         this.user = user;

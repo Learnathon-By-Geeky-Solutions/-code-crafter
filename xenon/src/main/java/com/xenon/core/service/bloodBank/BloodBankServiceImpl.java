@@ -1,13 +1,22 @@
 package com.xenon.core.service.bloodBank;
 
 import com.xenon.core.domain.exception.ApiException;
+import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.request.bloodBank.CreateBloodBankAccountRequest;
+import com.xenon.core.domain.response.PageResponseRequest;
+import com.xenon.core.domain.response.bloodBank.BloodBankResponse;
 import com.xenon.core.service.BaseService;
+import com.xenon.data.entity.bloodBank.BloodBank;
 import com.xenon.data.repository.BloodBankRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -28,6 +37,73 @@ public class BloodBankServiceImpl extends BaseService implements BloodBankServic
             log.error(e.getMessage(), e);
             throw new ApiException(e);
         }
+    }
+
+    @Override
+    public ResponseEntity<?> getAllBloodBanks(Pageable pageable) {
+        try {
+            Page<BloodBank> bloodBanksPage = bloodBankRepository.findAll(pageable);
+
+            PageResponseRequest<BloodBankResponse> pageResponse = createBloodBanksPageResponse(bloodBanksPage);
+
+            return success("Blood banks retrieved successfully", pageResponse);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getBloodBanksByLocation(Long upazilaId, Pageable pageable) {
+        try {
+            Page<BloodBank> bloodBanksPage = bloodBankRepository.findByUpazilaId(upazilaId, pageable);
+
+            PageResponseRequest<BloodBankResponse> pageResponse = createBloodBanksPageResponse(bloodBanksPage);
+
+            return success("Blood banks by location retrieved successfully", pageResponse);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getBloodBankDetails(Long bloodBankId) {
+        try {
+            BloodBank bloodBank = bloodBankRepository.findById(bloodBankId)
+                    .orElseThrow(() -> new ClientException("Blood bank not found"));
+
+            BloodBankResponse response = convertToBloodBankResponse(bloodBank);
+
+            return success("Blood bank details retrieved successfully", response);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
+
+    private PageResponseRequest<BloodBankResponse> createBloodBanksPageResponse(Page<BloodBank> bloodBanksPage) {
+        List<BloodBankResponse> responses = bloodBanksPage.getContent().stream()
+                .map(this::convertToBloodBankResponse)
+                .collect(Collectors.toList());
+
+        return new PageResponseRequest<>(
+                responses,
+                bloodBanksPage.getNumber(),
+                bloodBanksPage.getSize(),
+                bloodBanksPage.getTotalElements(),
+                bloodBanksPage.getTotalPages()
+        );
+    }
+
+    private BloodBankResponse convertToBloodBankResponse(BloodBank bloodBank) {
+        return new BloodBankResponse(
+                bloodBank.getId(),
+                bloodBank.getRegistrationNumber(),
+                bloodBank.getUser().toResponse(),
+                bloodBank.getUser().getLatitude(),
+                bloodBank.getUser().getLongitude()
+        );
     }
 
     private void validateBloodBankRequest(CreateBloodBankAccountRequest body) {

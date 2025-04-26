@@ -8,6 +8,9 @@ import com.xenon.presenter.config.SecurityConfiguration;
 import io.micrometer.common.lang.Nullable;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +36,45 @@ public class CommentController {
         return commentService.getCommentsByBlogId(blogId);
     }
 
+    @GetMapping("/blogs/{blogId}/comments/paginated")
+    @PreAuthorize(shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> getCommentsByBlogIdPaginated(
+            @PathVariable Long blogId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction
+    ) {
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+        return commentService.getCommentsByBlogId(blogId, pageable);
+    }
+
+    @GetMapping("/blogs/{blogId}/comments/recent")
+    @PreAuthorize(shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> getRecentCommentsByBlogId(
+            @PathVariable Long blogId,
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        return commentService.getRecentCommentsByBlogId(blogId, limit);
+    }
+
+    @GetMapping("/user/comments")
+    @PreAuthorize(shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> getUserComments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction
+    ) {
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+        return commentService.getUserComments(pageable);
+    }
+
     @PutMapping("/comments/{commentId}")
     @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
@@ -47,4 +89,10 @@ public class CommentController {
         return commentService.deleteComment(commentId);
     }
 
+    @GetMapping("/blogs/{blogId}/comments/count")
+    @PreAuthorize(shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> countCommentsByBlogId(@PathVariable Long blogId) {
+        return commentService.countCommentsByBlogId(blogId);
+    }
 }

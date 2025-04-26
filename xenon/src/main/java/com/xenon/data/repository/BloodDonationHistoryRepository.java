@@ -15,7 +15,7 @@ public interface BloodDonationHistoryRepository extends JpaRepository<BloodDonat
 
 
     @Query("""
-        SELECT 
+        SELECT
             COUNT(bg) as totalDonation,
             COALESCE(SUM(bg.quantity), 0) as totalUnit,
             d.bloodType as bloodType
