@@ -34,15 +34,15 @@ public class AmbulanceReview {
     @Column
     private String review;
 
-    @Column(name = "review_date")
-    private LocalDate date;
+    @Column()
+    private LocalDate createdAt;
 
     public AmbulanceReview(User user, Ambulance ambulance, Integer rating, String review) {
         this.user = user;
         this.ambulance = ambulance;
         this.rating = rating;
         this.review = review;
-        this.date = LocalDate.now();
+        this.createdAt = LocalDate.now();
     }
 
     public AmbulanceReviewResponse toResponse() {
@@ -51,7 +51,7 @@ public class AmbulanceReview {
                 user.toResponse(),
                 rating,
                 review,
-                date
+                createdAt
         );
     }
 }

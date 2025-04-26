@@ -132,11 +132,11 @@ CREATE TABLE ambulance
 CREATE TABLE ambulance_review
 (
     id           BIGSERIAL PRIMARY KEY,
-    ambulance_id BIGINT       NOT NULL,
     user_id      BIGINT       NOT NULL,
-    review       VARCHAR(255) NOT NULL,
+    ambulance_id BIGINT       NOT NULL,
     rating       INT          NOT NULL,
-    review_date  DATE         NOT NULL,
+    review       VARCHAR(255) NOT NULL,
+    created_at   DATE         NOT NULL,
     FOREIGN KEY (ambulance_id) REFERENCES ambulance (id) ON DELETE SET NULL,
     FOREIGN KEY (user_id) REFERENCES table_user (id) ON DELETE SET NULL
 );

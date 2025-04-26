@@ -112,7 +112,7 @@ INSERT INTO ambulance_review (ambulance_id,
                               user_id,
                               review,
                               rating,
-                              review_date)
+                              created_at)
 VALUES (1,
         1,
         'The ICU ambulance arrived quickly and the medical staff was very professional. Great service!',

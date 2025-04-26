@@ -1,10 +1,9 @@
 package com.xenon.core.domain.response.ambulance;
 
+import com.xenon.core.domain.response.PageResponseRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -12,5 +11,5 @@ import java.util.List;
 public class AmbulanceListResponse {
     private int ambulanceCount;
     private int doctorCount;
-    private List<AmbulanceResponse> ambulances;
+    private PageResponseRequest<AmbulanceResponse> ambulances;
 }

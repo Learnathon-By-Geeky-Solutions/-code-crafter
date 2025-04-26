@@ -4,12 +4,15 @@ import com.xenon.common.annotation.PreAuthorize;
 import com.xenon.core.domain.request.ambulance.AmbulanceReviewRequest;
 import com.xenon.core.domain.request.ambulance.CreateAmbulanceAccountRequest;
 import com.xenon.core.service.ambulance.AmbulanceService;
+import com.xenon.data.entity.ambulance.AmbulanceStatus;
 import com.xenon.data.entity.ambulance.AmbulanceType;
 import com.xenon.data.entity.user.UserRole;
 import com.xenon.presenter.config.SecurityConfiguration;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
@@ -30,23 +33,81 @@ public class AmbulanceController {
     }
 
     @PostMapping("create-ambulance-review")
-    @PreAuthorize(authorities = {UserRole.USER, UserRole.ADMIN}, shouldCheckAccountStatus = true)
+    @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> createAmbulanceReviewRequest(@Nullable @RequestBody AmbulanceReviewRequest body) {
         return ambulanceService.createAmbulanceReviewRequest(body);
     }
-    
-    @GetMapping
+
+    @GetMapping("list")
     @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> getAmbulanceList(@Param("type") AmbulanceType type) {
-        return ambulanceService.getAmbulanceList(type);
+    public ResponseEntity<?> getAmbulanceList(
+            @RequestParam AmbulanceType type,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+
+        return ambulanceService.getAmbulanceList(type, pageable);
+    }
+
+    @GetMapping("/{ambulanceId}")
+    @PreAuthorize(shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> getAmbulanceById(@PathVariable Long ambulanceId) {
+        return ambulanceService.getAmbulanceById(ambulanceId);
+    }
+
+    @GetMapping("/by-area")
+    @PreAuthorize(shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> getAmbulancesByArea(
+            @RequestParam AmbulanceType type,
+            @RequestParam String area,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+
+        return ambulanceService.getAmbulancesByArea(type, area, pageable);
     }
 
     @GetMapping("reviews/{ambulanceId}")
     @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> getAmbulanceReviews(@PathVariable("ambulanceId") Long ambulanceId) {
-        return ambulanceService.getAmbulanceReviews(ambulanceId);
+    public ResponseEntity<?> getAmbulanceReviews(
+            @PathVariable Long ambulanceId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction) {
+
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+
+        return ambulanceService.getAmbulanceReviews(ambulanceId, pageable);
+    }
+
+    @PutMapping("/{ambulanceId}/status")
+    @PreAuthorize(authorities = {UserRole.AMBULANCE, UserRole.ADMIN}, shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> updateAmbulanceStatus(
+            @PathVariable Long ambulanceId,
+            @RequestParam AmbulanceStatus status) {
+        return ambulanceService.updateAmbulanceStatus(ambulanceId, status);
+    }
+
+    @GetMapping("/can-review/{ambulanceId}")
+    @PreAuthorize(shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> checkUserCanReview(@PathVariable Long ambulanceId) {
+        return ambulanceService.checkUserCanReview(ambulanceId);
     }
 }
