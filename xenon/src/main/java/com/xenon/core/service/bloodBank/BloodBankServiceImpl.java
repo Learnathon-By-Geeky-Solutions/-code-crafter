@@ -5,7 +5,7 @@ import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.request.bloodBank.CreateBloodBankAccountRequest;
 import com.xenon.core.domain.response.PageResponseRequest;
 import com.xenon.core.domain.response.bloodBank.BloodBankResponse;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.bloodBank.BloodBank;
 import com.xenon.data.repository.BloodBankRepository;
 import lombok.RequiredArgsConstructor;

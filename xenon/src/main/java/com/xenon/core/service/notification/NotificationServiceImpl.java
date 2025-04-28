@@ -2,7 +2,7 @@ package com.xenon.core.service.notification;
 
 import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.exception.ClientException;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.notification.Notification;
 import com.xenon.data.entity.user.User;
 import com.xenon.data.repository.NotificationRepository;

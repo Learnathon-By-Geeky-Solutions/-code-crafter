@@ -88,6 +88,7 @@ public class JwtUtil {
 
     @NonNull
     private Key getSigningKey() {
+        System.out.println(Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey)));
         return Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
     }
 

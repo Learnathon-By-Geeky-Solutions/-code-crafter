@@ -4,7 +4,7 @@ import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.response.alert.AlertResponse;
 import com.xenon.core.domain.response.alert.UserAlertNotificationResponse;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.core.service.location.LocationService;
 import com.xenon.core.service.location.UserLocationChangedEvent;
 import com.xenon.data.entity.alert.AlertTable;

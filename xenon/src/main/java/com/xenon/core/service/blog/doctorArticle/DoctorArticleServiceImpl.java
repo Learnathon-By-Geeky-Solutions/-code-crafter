@@ -4,7 +4,7 @@ import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.exception.UnauthorizedException;
 import com.xenon.core.domain.request.blog.BlogPostRequest;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.core.service.blog.BlogService;
 import com.xenon.data.entity.blog.Blog;
 import com.xenon.data.entity.blog.PostCategory;

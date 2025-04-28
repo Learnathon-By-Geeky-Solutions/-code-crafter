@@ -28,4 +28,11 @@ public interface SpecialistConsultationService {
     ResponseEntity<?> completeSpecialistConsultation(Long appointmentId);
 
     ResponseEntity<?> toggleConsultationAvailability(Long consultationId);
+
+    /**
+     * Confirms a pending specialist consultation appointment
+     * @param appointmentId The appointment ID
+     * @return ResponseEntity with success/failure message
+     */
+    ResponseEntity<?> confirmSpecialistConsultation(Long appointmentId);
 }

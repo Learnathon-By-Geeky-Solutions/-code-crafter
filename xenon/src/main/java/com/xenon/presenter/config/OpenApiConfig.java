@@ -30,6 +30,10 @@ import org.springframework.context.annotation.Configuration;
                 @Server(
                         description = "localhost",
                         url = "http://localhost:8080/"
+                ),
+                @Server(
+                        description = "cloud",
+                        url = "https://api.xenonhealthcare.xyz/"
                 )
         }
 )

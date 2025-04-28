@@ -1,4 +1,4 @@
-package com.xenon.core.service;
+package com.xenon.core.service.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

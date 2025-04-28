@@ -1,4 +1,4 @@
-package com.xenon.core;
+package com.xenon.core.service.common;
 
 import com.xenon.core.service.alert.AlertNotificationServiceUser;
 import com.xenon.data.entity.alert.UserLocation;

@@ -15,6 +15,5 @@ public class CreateAppointmentTableRequest {
 
     public OfflineAppointmentTable toEntity(User user, DoctorSchedule doctorSchedule) {
         return new OfflineAppointmentTable(user, doctorSchedule);
-
     }
 }

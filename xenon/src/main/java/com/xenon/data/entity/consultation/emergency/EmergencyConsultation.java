@@ -1,6 +1,6 @@
 package com.xenon.data.entity.consultation.emergency;
 
-import com.xenon.core.domain.response.emergencyConsultation.EmergencyConsultationResponse;
+import com.xenon.core.domain.response.consultation.emergencyConsultation.EmergencyConsultationResponse;
 import com.xenon.data.entity.doctor.Doctor;
 import com.xenon.data.entity.hospital.AVAILABILITY;
 import jakarta.persistence.*;

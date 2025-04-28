@@ -5,8 +5,10 @@ import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.request.consultation.specialist.CreateSpecialistConsultationRequest;
 import com.xenon.core.domain.request.consultation.specialist.SpecialistConsultationAppointmentRequest;
 import com.xenon.core.domain.response.consultation.SlotResponse;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.core.service.notification.NotificationService;
+import com.xenon.core.service.scheduling.ScheduleConflictService;
+import com.xenon.data.entity.consultation.STATUS;
 import com.xenon.data.entity.consultation.specialist.SpecialistConsultation;
 import com.xenon.data.entity.consultation.specialist.SpecialistConsultationAppointmentTable;
 import com.xenon.data.entity.doctor.Doctor;
@@ -37,8 +39,8 @@ public class SpecialistConsultationServiceImpl extends BaseService implements Sp
     private final SpecialistConsultationAppointmentTableRepository specialistConsultationAppointmentTableRepository;
     private final DoctorRepository doctorRepository;
     private final NotificationService notificationService;
-    private final DoctorScheduleRepository doctorScheduleRepository;
-    private final OfflineAppointmentTableRepository offlineAppointmentTableRepository;
+    private final ScheduleConflictService scheduleConflictService;
+    private final EmergencyConsultationRepository emergencyConsultationRepository;
 
     @Override
     @Transactional
@@ -49,14 +51,24 @@ public class SpecialistConsultationServiceImpl extends BaseService implements Sp
             Doctor doctor = doctorRepository.findById(request.getDoctor())
                     .orElseThrow(() -> new ClientException("Doctor not found"));
 
-            // Check if there's a scheduling conflict with offline appointments
-            if (hasOfflineSchedulingConflict(doctor.getId(), request.getDate_day(), request.getStartTime(), request.getEndTime())) {
-                throw new ClientException("This time slot conflicts with an offline appointment schedule");
+            // Check for scheduling conflicts using the conflict service
+            ResponseEntity<?> conflictResponse = scheduleConflictService.checkSpecialistScheduleConflict(
+                    doctor.getId(),
+                    request.getDate_day(),
+                    request.getStartTime(),
+                    request.getEndTime()
+            );
+
+            if (!conflictResponse.getStatusCode().is2xxSuccessful()) {
+                return conflictResponse;
             }
 
-            // Check if there's a scheduling conflict with other specialist consultations
-            if (hasSpecialistSchedulingConflict(doctor.getId(), request.getDate_day(), request.getStartTime(), request.getEndTime())) {
-                throw new ClientException("This time slot conflicts with another specialist consultation schedule");
+            // If the doctor wants to enable specialist consultation, disable emergency consultations
+            if (request.getAvailability() == AVAILABILITY.AVAILABLE) {
+                ResponseEntity<?> disableResponse = scheduleConflictService.disableEmergencyConsultationForSpecialist(doctor.getId());
+                if (!disableResponse.getStatusCode().is2xxSuccessful()) {
+                    return disableResponse;
+                }
             }
 
             SpecialistConsultation specialistConsultation = request.toEntity(doctor);
@@ -85,6 +97,7 @@ public class SpecialistConsultationServiceImpl extends BaseService implements Sp
 
             // Create appointment
             SpecialistConsultationAppointmentTable appointment = request.toEntity(getCurrentUser(), specialistConsultation);
+            appointment.setAppointmentStatus(AppointmentStatus.PENDING); // Set as pending initially
 
             // Generate meeting link
             String meetingLink = generateMeetingLink();
@@ -95,25 +108,25 @@ public class SpecialistConsultationServiceImpl extends BaseService implements Sp
             // Send notifications
             notificationService.sendNotification(
                     getCurrentUser().getId(),
-                    "Specialist Consultation Booked",
-                    "Your specialist consultation has been booked for " +
+                    "Specialist Consultation Requested",
+                    "Your specialist consultation has been requested for " +
                             request.getConsultationDate() + " at " + request.getSlotStartTime() +
-                            ". Please join using the meeting link: " + meetingLink,
+                            " and is awaiting confirmation.",
                     "SPECIALIST_CONSULTATION",
                     appointment.getId()
             );
 
             notificationService.sendNotification(
                     specialistConsultation.getDoctor().getUser().getId(),
-                    "New Specialist Consultation",
-                    "You have a new specialist consultation scheduled for " +
+                    "New Specialist Consultation Request",
+                    "You have a new specialist consultation request scheduled for " +
                             request.getConsultationDate() + " at " + request.getSlotStartTime() +
-                            ". Please join using the meeting link: " + meetingLink,
+                            ". Please confirm or cancel it.",
                     "SPECIALIST_CONSULTATION",
                     appointment.getId()
             );
 
-            return success("Specialist consultation booked successfully", appointment);
+            return success("Specialist consultation requested successfully", appointment);
         } catch (Exception e) {
             log.error("Error booking specialist consultation: {}", e.getMessage(), e);
             throw new ApiException(e);
@@ -122,7 +135,7 @@ public class SpecialistConsultationServiceImpl extends BaseService implements Sp
 
     @Override
     public ResponseEntity<?> getAvailableDoctors(SpecialistCategory specialistCategory) {
-        /*try {
+        try {
             List<Doctor> doctors;
 
             if (specialistCategory != null) {
@@ -133,9 +146,14 @@ public class SpecialistConsultationServiceImpl extends BaseService implements Sp
 
             // Filter doctors who have at least one active specialist consultation
             List<Doctor> doctorsWithConsultations = doctors.stream()
-                    .filter(doctor ->
-                            !specialistConsultationRepository.findByDoctorAndStatus(
-                                    doctor, com.xenon.data.entity.consultation.STATUS.ACTIVE).isEmpty())
+                    .filter(doctor -> {
+                        List<SpecialistConsultation> consultations = specialistConsultationRepository.findByDoctorAndStatus(
+                                doctor, STATUS.ACTIVE);
+
+                        // Check if any consultations are available
+                        return consultations.stream()
+                                .anyMatch(consultation -> consultation.getAvailability() == AVAILABILITY.AVAILABLE);
+                    })
                     .collect(Collectors.toList());
 
             return success(
@@ -145,8 +163,7 @@ public class SpecialistConsultationServiceImpl extends BaseService implements Sp
         } catch (Exception e) {
             log.error("Error retrieving available doctors: {}", e.getMessage(), e);
             throw new ApiException(e);
-        }*/
-        return null;
+        }
     }
 
     @Override
@@ -160,7 +177,7 @@ public class SpecialistConsultationServiceImpl extends BaseService implements Sp
 
             // Get all specialist consultations for this doctor and day
             List<SpecialistConsultation> consultations = specialistConsultationRepository.findByDoctorAndDayAndStatus(
-                    doctor, day, com.xenon.data.entity.consultation.STATUS.ACTIVE);
+                    doctor, day, STATUS.ACTIVE);
 
             if (consultations.isEmpty()) {
                 return success("No available slots found for this date", new ArrayList<>());
@@ -356,6 +373,12 @@ public class SpecialistConsultationServiceImpl extends BaseService implements Sp
             if (consultation.getAvailability() == AVAILABILITY.AVAILABLE) {
                 consultation.setAvailability(AVAILABILITY.UNAVAILABLE);
             } else {
+                // If enabling specialist consultation, disable emergency consultation
+                ResponseEntity<?> disableResponse = scheduleConflictService.disableEmergencyConsultationForSpecialist(consultation.getDoctor().getId());
+                if (!disableResponse.getStatusCode().is2xxSuccessful()) {
+                    return disableResponse;
+                }
+
                 consultation.setAvailability(AVAILABILITY.AVAILABLE);
             }
 
@@ -364,6 +387,45 @@ public class SpecialistConsultationServiceImpl extends BaseService implements Sp
             return success("Consultation availability toggled successfully", consultation);
         } catch (Exception e) {
             log.error("Error toggling consultation availability: {}", e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<?> confirmSpecialistConsultation(Long appointmentId) {
+        try {
+            SpecialistConsultationAppointmentTable appointment = specialistConsultationAppointmentTableRepository.findById(appointmentId)
+                    .orElseThrow(() -> new ClientException("Specialist consultation appointment not found"));
+
+            // Ensure the current user is the doctor
+            if (!getCurrentUser().getId().equals(appointment.getSpecialistConsultation().getDoctor().getUser().getId()) &&
+                    !getCurrentUser().getRole().equals(com.xenon.data.entity.user.UserRole.ADMIN)) {
+                throw new ClientException("Only the doctor can confirm this consultation");
+            }
+
+            // Check if the appointment is in pending status
+            if (appointment.getAppointmentStatus() != AppointmentStatus.PENDING) {
+                throw new ClientException("Can only confirm appointments in pending status");
+            }
+
+            // Update appointment status
+            appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
+            specialistConsultationAppointmentTableRepository.save(appointment);
+
+            // Send confirmation notification with meeting link
+            notificationService.sendNotification(
+                    appointment.getUser().getId(),
+                    "Specialist Consultation Confirmed",
+                    "Your specialist consultation scheduled for " + appointment.getConsultationDate() +
+                            " has been confirmed. Please join using the meeting link: " + appointment.getMeetingLink(),
+                    "SPECIALIST_CONSULTATION",
+                    appointment.getId()
+            );
+
+            return success("Specialist consultation confirmed successfully", appointment);
+        } catch (Exception e) {
+            log.error("Error confirming specialist consultation: {}", e.getMessage(), e);
             throw new ApiException(e);
         }
     }
@@ -479,38 +541,6 @@ public class SpecialistConsultationServiceImpl extends BaseService implements Sp
                 request.getSlotEndTime().isAfter(consultation.getEndTime())) {
             throw new ClientException("Slot times must be within the consultation time range");
         }
-    }
-
-    private boolean hasOfflineSchedulingConflict(Long doctorId, DAY day, LocalTime startTime, LocalTime endTime) {
-        // Check if there are any offline schedules for this doctor on the same day with overlapping times
-        List<com.xenon.data.entity.hospital.DoctorSchedule> schedules =
-                doctorScheduleRepository.findByOfflineDoctorAffiliation_DoctorIdAndDay(doctorId, day);
-
-        for (com.xenon.data.entity.hospital.DoctorSchedule schedule : schedules) {
-            if (timesOverlap(startTime, endTime, schedule.getStartTime(), schedule.getEndTime())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private boolean hasSpecialistSchedulingConflict(Long doctorId, DAY day, LocalTime startTime, LocalTime endTime) {
-        // Check if there are any specialist consultations for this doctor on the same day with overlapping times
-        List<SpecialistConsultation> consultations =
-                specialistConsultationRepository.findByDoctorIdAndDay(doctorId, day);
-
-        for (SpecialistConsultation consultation : consultations) {
-            if (timesOverlap(startTime, endTime, consultation.getStartTime(), consultation.getEndTime())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private boolean timesOverlap(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
-        return (start1.isBefore(end2) && start2.isBefore(end1));
     }
 
     private List<SlotResponse> generateTimeSlots(Long consultationId, LocalDate date, LocalTime startTime, LocalTime endTime, int durationMinutes) {

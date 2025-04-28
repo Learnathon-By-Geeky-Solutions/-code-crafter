@@ -6,7 +6,7 @@ import com.xenon.core.domain.request.hospital.CreateAppointmentTableRequest;
 import com.xenon.core.domain.request.user.CreateAccountRequest;
 import com.xenon.core.domain.request.user.UpdateAccountRequest;
 import com.xenon.core.domain.request.user.UpdateUserLatitudeLongitude;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.location.Upazila;
 import com.xenon.data.entity.user.User;
 import com.xenon.data.repository.OfflineAppointmentTableRepository;

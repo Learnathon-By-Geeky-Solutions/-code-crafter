@@ -1,76 +1,33 @@
 package com.xenon.data.entity.consultation.emergency;
 
-import com.xenon.data.entity.hospital.AppointmentStatus;
-import com.xenon.data.entity.user.Gender;
+import com.xenon.data.entity.common.BaseAppointment;
 import com.xenon.data.entity.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "emergency_appointment_table")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class EmergencyConsultationAppointmentTable {
+public class EmergencyConsultationAppointmentTable extends BaseAppointment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "emergency_consultation_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "emergency_consultation_id", nullable = false)
     private EmergencyConsultation emergencyConsultation;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "USER_ID")
-    private User user;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private AppointmentStatus appointmentStatus;
-
-    @Column
-    private String meetingLink;
-
-    @Column
-    private String paymentId;
-
-    @Column
-    private String paymentStatus;
-
-    @Column
-    private Boolean isBeneficiary;
-
-    @Column
-    private String beneficiaryName;
-
-    @Column
-    private String beneficiaryPhone;
-
-    @Column
-    private String beneficiaryAddress;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private Gender beneficiaryGender;
-
-    @Column
-    private Integer beneficiaryAge;
-
-    @Column
-    private String medicalHistoryFile;
-
-    @Column
+    @Column(nullable = false)
     private LocalDateTime consultationDate;
 
+    private String meetingLink;
+
     public EmergencyConsultationAppointmentTable(User user, EmergencyConsultation emergencyConsultation) {
-        this.user = user;
+        super(user);
         this.emergencyConsultation = emergencyConsultation;
-        this.appointmentStatus = AppointmentStatus.PENDING;
-        this.isBeneficiary = false;
+        this.consultationDate = LocalDateTime.now();
     }
 }

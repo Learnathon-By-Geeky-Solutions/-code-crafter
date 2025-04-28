@@ -2,7 +2,7 @@ package com.xenon.core.service.pharmacy;
 
 import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.request.pharmacy.CreatePharmacyAccountRequest;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.repository.PharmacyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

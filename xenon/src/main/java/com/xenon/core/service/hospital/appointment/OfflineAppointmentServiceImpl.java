@@ -2,10 +2,12 @@ package com.xenon.core.service.hospital.appointment;
 
 import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.exception.ClientException;
+import com.xenon.core.domain.request.hospital.CreateDoctorScheduleRequest;
 import com.xenon.core.domain.request.hospital.doctorBooking.OfflineAppointmentRequest;
 import com.xenon.core.domain.response.consultation.SlotResponse;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.core.service.notification.NotificationService;
+import com.xenon.core.service.scheduling.ScheduleConflictService;
 import com.xenon.data.entity.doctor.Doctor;
 import com.xenon.data.entity.doctor.SpecialistCategory;
 import com.xenon.data.entity.hospital.*;
@@ -34,7 +36,7 @@ public class OfflineAppointmentServiceImpl extends BaseService implements Offlin
     private final DoctorScheduleRepository doctorScheduleRepository;
     private final OfflineAppointmentTableRepository offlineAppointmentTableRepository;
     private final NotificationService notificationService;
-    private final HospitalRepository hospitalRepository;
+    private final ScheduleConflictService scheduleConflictService;
 
     @Override
     @Transactional
@@ -76,17 +78,19 @@ public class OfflineAppointmentServiceImpl extends BaseService implements Offlin
 
             // Create appointment
             OfflineAppointmentTable appointment = request.toEntity(getCurrentUser(), schedule);
+            appointment.setAppointmentStatus(AppointmentStatus.PENDING); // Set as pending initially
             offlineAppointmentTableRepository.save(appointment);
 
             // Send notifications
             notificationService.sendNotification(
                     getCurrentUser().getId(),
-                    "Offline Appointment Booked",
-                    "Your offline appointment has been booked for " +
+                    "Offline Appointment Requested",
+                    "Your offline appointment has been requested for " +
                             request.getAppointmentDate() + " at " + request.getAppointmentTime() +
                             " with Dr. " + schedule.getOfflineDoctorAffiliation().getDoctor().getUser().getFirstName() +
                             " " + schedule.getOfflineDoctorAffiliation().getDoctor().getUser().getLastName() +
-                            " at " + schedule.getOfflineDoctorAffiliation().getHospitalBranch().getBranchName(),
+                            " at " + schedule.getOfflineDoctorAffiliation().getHospitalBranch().getBranchName() +
+                            " and is awaiting confirmation.",
                     "OFFLINE_APPOINTMENT",
                     appointment.getId()
             );
@@ -94,8 +98,8 @@ public class OfflineAppointmentServiceImpl extends BaseService implements Offlin
             // Notify the doctor
             notificationService.sendNotification(
                     schedule.getOfflineDoctorAffiliation().getDoctor().getUser().getId(),
-                    "New Offline Appointment",
-                    "You have a new offline appointment scheduled for " +
+                    "New Offline Appointment Request",
+                    "You have a new offline appointment request for " +
                             request.getAppointmentDate() + " at " + request.getAppointmentTime() +
                             " at " + schedule.getOfflineDoctorAffiliation().getHospitalBranch().getBranchName(),
                     "OFFLINE_APPOINTMENT",
@@ -105,8 +109,8 @@ public class OfflineAppointmentServiceImpl extends BaseService implements Offlin
             // Notify the hospital
             notificationService.sendNotification(
                     schedule.getOfflineDoctorAffiliation().getHospitalBranch().getHospital().getUser().getId(),
-                    "New Offline Appointment",
-                    "There is a new offline appointment scheduled for " +
+                    "New Offline Appointment Request",
+                    "There is a new offline appointment request for " +
                             request.getAppointmentDate() + " at " + request.getAppointmentTime() +
                             " with Dr. " + schedule.getOfflineDoctorAffiliation().getDoctor().getUser().getFirstName() +
                             " " + schedule.getOfflineDoctorAffiliation().getDoctor().getUser().getLastName(),
@@ -114,7 +118,7 @@ public class OfflineAppointmentServiceImpl extends BaseService implements Offlin
                     appointment.getId()
             );
 
-            return success("Offline appointment booked successfully", appointment);
+            return success("Offline appointment requested successfully", appointment);
         } catch (Exception e) {
             log.error("Error booking offline appointment: {}", e.getMessage(), e);
             throw new ApiException(e);
@@ -135,8 +139,7 @@ public class OfflineAppointmentServiceImpl extends BaseService implements Offlin
     @Override
     public ResponseEntity<?> getHospitalDepartments(Long hospitalBranchId) {
         try {
-            HospitalBranch hospitalBranch = hospitalBranchRepository.findById(hospitalBranchId)
-                    .orElseThrow(() -> new ClientException("Hospital branch not found"));
+            hospitalBranchRepository.findById(hospitalBranchId).orElseThrow(() -> new ClientException("Hospital branch not found"));
 
             // Get all doctors affiliated with this hospital branch
             List<OfflineDoctorAffiliation> affiliations = offlineDoctorAffiliationRepository.findByHospitalBranchId(hospitalBranchId);
@@ -307,6 +310,15 @@ public class OfflineAppointmentServiceImpl extends BaseService implements Offlin
 
             // Send notifications
             notificationService.sendNotification(
+                    appointment.getUser().getId(),
+                    "Offline Appointment Cancelled",
+                    "Your offline appointment scheduled for " + appointment.getAppointmentDate() +
+                            " at " + appointment.getAppointmentTime() + " has been cancelled.",
+                    "OFFLINE_APPOINTMENT",
+                    appointment.getId()
+            );
+
+            notificationService.sendNotification(
                     appointment.getDoctorSchedule().getOfflineDoctorAffiliation().getDoctor().getUser().getId(),
                     "Offline Appointment Cancelled",
                     "An offline appointment scheduled for " + appointment.getAppointmentDate() +
@@ -367,6 +379,141 @@ public class OfflineAppointmentServiceImpl extends BaseService implements Offlin
         } catch (Exception e) {
             log.error("Error completing offline appointment: {}", e.getMessage(), e);
             throw new ApiException(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<?> confirmOfflineAppointment(Long appointmentId) {
+        try {
+            OfflineAppointmentTable appointment = offlineAppointmentTableRepository.findById(appointmentId)
+                    .orElseThrow(() -> new ClientException("Offline appointment not found"));
+
+            // Ensure the current user is authorized to confirm this appointment
+            if (!getCurrentUser().getId().equals(appointment.getDoctorSchedule().getOfflineDoctorAffiliation().getDoctor().getUser().getId()) &&
+                    !getCurrentUser().getId().equals(appointment.getDoctorSchedule().getOfflineDoctorAffiliation().getHospitalBranch().getHospital().getUser().getId()) &&
+                    !getCurrentUser().getRole().equals(com.xenon.data.entity.user.UserRole.ADMIN)) {
+                throw new ClientException("You are not authorized to confirm this appointment");
+            }
+
+            // Check if the appointment is in pending status
+            if (appointment.getAppointmentStatus() != AppointmentStatus.PENDING) {
+                throw new ClientException("Can only confirm appointments in pending status");
+            }
+
+            // Update appointment status
+            appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
+            offlineAppointmentTableRepository.save(appointment);
+
+            // Update booking quantity
+            DoctorSchedule schedule = appointment.getDoctorSchedule();
+            if (schedule.getBooking_quantity() > 0) {
+                schedule.setBooking_quantity(schedule.getBooking_quantity() - 1);
+                doctorScheduleRepository.save(schedule);
+            }
+
+            // Send confirmation notification
+            notificationService.sendNotification(
+                    appointment.getUser().getId(),
+                    "Offline Appointment Confirmed",
+                    "Your offline appointment scheduled for " + appointment.getAppointmentDate() +
+                            " at " + appointment.getAppointmentTime() + " with Dr. " +
+                            appointment.getDoctorSchedule().getOfflineDoctorAffiliation().getDoctor().getUser().getFirstName() +
+                            " " + appointment.getDoctorSchedule().getOfflineDoctorAffiliation().getDoctor().getUser().getLastName() +
+                            " at " + appointment.getDoctorSchedule().getOfflineDoctorAffiliation().getHospitalBranch().getBranchName() +
+                            " has been confirmed.",
+                    "OFFLINE_APPOINTMENT",
+                    appointment.getId()
+            );
+
+            return success("Offline appointment confirmed successfully", appointment);
+        } catch (Exception e) {
+            log.error("Error confirming offline appointment: {}", e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<?> createDoctorSchedule(CreateDoctorScheduleRequest request) {
+        validateCreateDoctorScheduleRequest(request);
+
+        try {
+            DoctorAffiliationId id = new DoctorAffiliationId(
+                    request.getDoctorId(),
+                    request.getHospitalBranchId()
+            );
+
+            OfflineDoctorAffiliation affiliation = offlineDoctorAffiliationRepository.findById(id)
+                    .orElseThrow(() -> new ClientException("Affiliation not found!"));
+
+            // Check for scheduling conflicts using the conflict service
+            ResponseEntity<?> conflictResponse = scheduleConflictService.checkOfflineScheduleConflict(
+                    request.getDoctorId(),
+                    request.getHospitalBranchId(),
+                    request.getDay(),
+                    request.getStartTime(),
+                    request.getEndTime()
+            );
+
+            if (!conflictResponse.getStatusCode().is2xxSuccessful()) {
+                return conflictResponse;
+            }
+
+            DoctorSchedule schedule = request.toEntity(affiliation);
+            doctorScheduleRepository.save(schedule);
+
+            return success("Schedule created successfully", schedule);
+        } catch (Exception e) {
+            log.error("Error creating doctor schedule: {}", e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
+
+    private void validateCreateDoctorScheduleRequest(CreateDoctorScheduleRequest request) {
+        super.validateBody(request);
+
+        if (request.getDoctorId() == null) {
+            throw new ClientException("Doctor ID is required");
+        }
+
+        if (request.getHospitalBranchId() == null) {
+            throw new ClientException("Hospital branch ID is required");
+        }
+
+        if (request.getDay() == null) {
+            throw new ClientException("Day is required");
+        }
+
+        if (request.getStartTime() == null) {
+            throw new ClientException("Start time is required");
+        }
+
+        if (request.getEndTime() == null) {
+            throw new ClientException("End time is required");
+        }
+
+        if (request.getAvailability() == null) {
+            throw new ClientException("Availability is required");
+        }
+
+        if (request.getBooking_quantity() == null || request.getBooking_quantity() <= 0) {
+            throw new ClientException("Valid booking quantity is required");
+        }
+
+        if (request.getDuration() == null || request.getDuration() <= 0) {
+            throw new ClientException("Valid duration is required");
+        }
+
+        // Ensure end time is after start time
+        if (!request.getEndTime().isAfter(request.getStartTime())) {
+            throw new ClientException("End time must be after start time");
+        }
+
+        // Ensure duration fits within the time range
+        long minutesBetween = java.time.Duration.between(request.getStartTime(), request.getEndTime()).toMinutes();
+        if (request.getDuration() > minutesBetween) {
+            throw new ClientException("Duration is longer than the available time range");
         }
     }
 

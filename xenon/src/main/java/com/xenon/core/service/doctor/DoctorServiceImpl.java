@@ -2,7 +2,7 @@ package com.xenon.core.service.doctor;
 
 import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.request.doctor.DoctorProfileRequest;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.repository.DoctorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

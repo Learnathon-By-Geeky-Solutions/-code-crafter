@@ -3,7 +3,7 @@ package com.xenon.core.service.blood;
 import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.request.blood.CreateBloodCommentRequest;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.blood.BloodRequestPost;
 import com.xenon.data.repository.BloodRequestPostRepository;
 import com.xenon.data.repository.BloodCommentRepository;

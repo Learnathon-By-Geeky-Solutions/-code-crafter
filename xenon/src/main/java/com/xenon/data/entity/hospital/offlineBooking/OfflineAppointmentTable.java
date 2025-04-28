@@ -1,78 +1,35 @@
 package com.xenon.data.entity.hospital.offlineBooking;
 
-import com.xenon.data.entity.hospital.AppointmentStatus;
+import com.xenon.data.entity.common.BaseAppointment;
 import com.xenon.data.entity.hospital.DoctorSchedule;
-import com.xenon.data.entity.user.Gender;
 import com.xenon.data.entity.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "offline_appointment_table")
-@Data
-@AllArgsConstructor
+@Table(name = "offline_appointment_tables")
+@Getter
+@Setter
 @NoArgsConstructor
-public class OfflineAppointmentTable {
+public class OfflineAppointmentTable extends BaseAppointment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "DOCTOR_SCHEDULE_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_schedule_id", nullable = false)
     private DoctorSchedule doctorSchedule;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "USER_ID")
-    private User user;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private AppointmentStatus appointmentStatus;
-
-    @Column
-    private String paymentId;
-
-    @Column
-    private String paymentStatus;
-
-    @Column
-    private Boolean isBeneficiary;
-
-    @Column
-    private String beneficiaryName;
-
-    @Column
-    private String beneficiaryPhone;
-
-    @Column
-    private String beneficiaryAddress;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private Gender beneficiaryGender;
-
-    @Column
-    private Integer beneficiaryAge;
-
-    @Column
-    private String medicalHistoryFile;
-
-    @Column
+    @Column(nullable = false)
     private LocalDate appointmentDate;
 
-    @Column
+    @Column(nullable = false)
     private LocalTime appointmentTime;
 
     public OfflineAppointmentTable(User user, DoctorSchedule doctorSchedule) {
-        this.user = user;
+        super(user);
         this.doctorSchedule = doctorSchedule;
-        this.appointmentStatus = AppointmentStatus.CONFIRMED;
-        this.isBeneficiary = false;
     }
 }

@@ -2,7 +2,7 @@ package com.xenon.core.service.location;
 
 import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.request.alert.UpdateUserLocationRequest;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.alert.UserLocation;
 import com.xenon.data.entity.user.User;
 import com.xenon.data.repository.UserLocationRepository;

@@ -24,4 +24,11 @@ public interface EmergencyConsultationService {
     ResponseEntity<?> cancelEmergencyConsultation(Long appointmentId);
 
     ResponseEntity<?> completeEmergencyConsultation(Long appointmentId);
+
+    /**
+     * Confirms a pending emergency consultation appointment
+     * @param appointmentId The appointment ID
+     * @return ResponseEntity with success/failure message
+     */
+    ResponseEntity<?> confirmEmergencyConsultation(Long appointmentId);
 }

@@ -4,7 +4,7 @@ import com.xenon.common.util.JwtUtil;
 import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.exception.AuthException;
 import com.xenon.core.domain.request.auth.LoginRequest;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -12,8 +12,9 @@ public class SecurityConfiguration {
     @Value("${security.password.strength}")
     private int passwordStrength;
 
-    public static final String BACKEND_URL = "http://localhost:8080";
-    public static final String FRONTEND_URL = "http://localhost:3000";
+//    public static final String BACKEND_URL = "http://localhost:8080";
+    public static final String BACKEND_URL = "https://api.xenonhealthcare.xyz";
+    public static final String FRONTEND_URL = "http://localhost:5173";
 
     @Bean
     public PasswordEncoder passwordEncoder() {

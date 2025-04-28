@@ -10,7 +10,7 @@ import com.xenon.core.domain.response.donor.BloodDonationHistoryListResponse;
 import com.xenon.core.domain.response.donor.DonorProfileResponse;
 import com.xenon.core.domain.response.donor.DonorResponse;
 import com.xenon.core.domain.response.donor.projection.BloodDonationHistoryMetaData;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.donor.BloodDonationHistory;
 import com.xenon.data.entity.donor.BloodType;
 import com.xenon.data.entity.donor.Donor;

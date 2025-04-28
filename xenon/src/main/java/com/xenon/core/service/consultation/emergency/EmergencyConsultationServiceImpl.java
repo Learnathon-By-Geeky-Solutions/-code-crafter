@@ -4,8 +4,10 @@ import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.request.consultation.emergency.CreateEmergencyConsultationRequest;
 import com.xenon.core.domain.request.consultation.emergency.EmergencyConsultationAppointmentRequest;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.domain.response.consultation.emergencyConsultation.EmergencyConsultationResponse;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.core.service.notification.NotificationService;
+import com.xenon.core.service.scheduling.ScheduleConflictService;
 import com.xenon.data.entity.consultation.emergency.EmergencyConsultation;
 import com.xenon.data.entity.consultation.emergency.EmergencyConsultationAppointmentTable;
 import com.xenon.data.entity.doctor.Doctor;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -34,6 +37,7 @@ public class EmergencyConsultationServiceImpl extends BaseService implements Eme
     private final EmergencyConsultationTableRepository emergencyConsultationTableRepository;
     private final DoctorRepository doctorRepository;
     private final NotificationService notificationService;
+    private final ScheduleConflictService scheduleConflictService;
 
     @Override
     @Transactional
@@ -49,10 +53,18 @@ public class EmergencyConsultationServiceImpl extends BaseService implements Eme
                 throw new ClientException("Doctor already has an emergency consultation service");
             }
 
+            // If the doctor wants to enable emergency consultation, disable specialist consultations
+            if (request.getAvailability() == AVAILABILITY.AVAILABLE) {
+                ResponseEntity<?> disableResponse = scheduleConflictService.disableSpecialistConsultationsForEmergency(doctor.getId());
+                if (!disableResponse.getStatusCode().is2xxSuccessful()) {
+                    return disableResponse;
+                }
+            }
+
             EmergencyConsultation emergencyConsultation = request.toEntity(doctor);
             emergencyConsultationRepository.save(emergencyConsultation);
 
-            return success("Emergency consultation created successfully", emergencyConsultation.toResponse());
+            return success("Emergency consultation created successfully", mapToResponse(emergencyConsultation));
         } catch (Exception e) {
             log.error("Error creating emergency consultation: {}", e.getMessage(), e);
             throw new ApiException(e);
@@ -76,6 +88,7 @@ public class EmergencyConsultationServiceImpl extends BaseService implements Eme
             // Create appointment
             EmergencyConsultationAppointmentTable appointment = request.toEntity(getCurrentUser(), emergencyConsultation);
             appointment.setConsultationDate(LocalDateTime.now());
+            appointment.setAppointmentStatus(AppointmentStatus.PENDING); // Set as pending initially
 
             // Generate meeting link
             String meetingLink = generateMeetingLink();
@@ -83,28 +96,28 @@ public class EmergencyConsultationServiceImpl extends BaseService implements Eme
 
             emergencyConsultationTableRepository.save(appointment);
 
-            // Set doctor as unavailable
+            // Set doctor as unavailable temporarily until appointment is confirmed
             emergencyConsultation.setAvailability(AVAILABILITY.UNAVAILABLE);
             emergencyConsultationRepository.save(emergencyConsultation);
 
             // Send notifications
             notificationService.sendNotification(
                     getCurrentUser().getId(),
-                    "Emergency Consultation Booked",
-                    "Your emergency consultation has been booked. Please join using the meeting link: " + meetingLink,
+                    "Emergency Consultation Requested",
+                    "Your emergency consultation request has been submitted and is awaiting confirmation.",
                     "EMERGENCY_CONSULTATION",
                     appointment.getId()
             );
 
             notificationService.sendNotification(
                     emergencyConsultation.getDoctor().getUser().getId(),
-                    "New Emergency Consultation",
-                    "You have a new emergency consultation. Please join using the meeting link: " + meetingLink,
+                    "New Emergency Consultation Request",
+                    "You have a new emergency consultation request. Please confirm or cancel it soon.",
                     "EMERGENCY_CONSULTATION",
                     appointment.getId()
             );
 
-            return success("Emergency consultation booked successfully", appointment);
+            return success("Emergency consultation requested successfully", appointment);
         } catch (Exception e) {
             log.error("Error booking emergency consultation: {}", e.getMessage(), e);
             throw new ApiException(e);
@@ -123,9 +136,13 @@ public class EmergencyConsultationServiceImpl extends BaseService implements Eme
                 availableDoctors = emergencyConsultationRepository.findByAvailability(AVAILABILITY.AVAILABLE);
             }
 
+            List<EmergencyConsultationResponse> responses = availableDoctors.stream()
+                    .map(this::mapToResponse)
+                    .collect(Collectors.toList());
+
             return success(
                     "Available doctors for emergency consultation retrieved successfully",
-                    availableDoctors.stream().map(EmergencyConsultation::toResponse).toList()
+                    responses
             );
         } catch (Exception e) {
             log.error("Error retrieving available doctors: {}", e.getMessage(), e);
@@ -158,9 +175,14 @@ public class EmergencyConsultationServiceImpl extends BaseService implements Eme
                         emergencyConsultationTableRepository.findByEmergencyConsultationAndAppointmentStatus(
                                 emergencyConsultation, AppointmentStatus.PENDING);
 
-
                 if (!pendingAppointments.isEmpty()) {
                     throw new ClientException("Cannot set availability to AVAILABLE while there are pending appointments");
+                }
+
+                // If enabling emergency consultation, disable specialist consultations
+                ResponseEntity<?> disableResponse = scheduleConflictService.disableSpecialistConsultationsForEmergency(doctor.getId());
+                if (!disableResponse.getStatusCode().is2xxSuccessful()) {
+                    return disableResponse;
                 }
 
                 emergencyConsultation.setAvailability(AVAILABILITY.AVAILABLE);
@@ -170,7 +192,7 @@ public class EmergencyConsultationServiceImpl extends BaseService implements Eme
 
             return success(
                     "Doctor availability toggled successfully",
-                    emergencyConsultation.toResponse()
+                    mapToResponse(emergencyConsultation)
             );
         } catch (Exception e) {
             log.error("Error toggling doctor availability: {}", e.getMessage(), e);
@@ -328,6 +350,44 @@ public class EmergencyConsultationServiceImpl extends BaseService implements Eme
         }
     }
 
+    @Override
+    @Transactional
+    public ResponseEntity<?> confirmEmergencyConsultation(Long appointmentId) {
+        try {
+            EmergencyConsultationAppointmentTable appointment = emergencyConsultationTableRepository.findById(appointmentId)
+                    .orElseThrow(() -> new ClientException("Emergency consultation appointment not found"));
+
+            // Ensure the current user is the doctor
+            if (!getCurrentUser().getId().equals(appointment.getEmergencyConsultation().getDoctor().getUser().getId()) &&
+                    !getCurrentUser().getRole().equals(com.xenon.data.entity.user.UserRole.ADMIN)) {
+                throw new ClientException("Only the doctor can confirm this consultation");
+            }
+
+            // Check if the appointment is in pending status
+            if (appointment.getAppointmentStatus() != AppointmentStatus.PENDING) {
+                throw new ClientException("Can only confirm appointments in pending status");
+            }
+
+            // Update appointment status
+            appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
+            emergencyConsultationTableRepository.save(appointment);
+
+            // Send confirmation notification with meeting link
+            notificationService.sendNotification(
+                    appointment.getUser().getId(),
+                    "Emergency Consultation Confirmed",
+                    "Your emergency consultation has been confirmed. Please join using the meeting link: " + appointment.getMeetingLink(),
+                    "EMERGENCY_CONSULTATION",
+                    appointment.getId()
+            );
+
+            return success("Emergency consultation confirmed successfully", appointment);
+        } catch (Exception e) {
+            log.error("Error confirming emergency consultation: {}", e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
+
     private void validateCreateEmergencyConsultationRequest(CreateEmergencyConsultationRequest request) {
         super.validateBody(request);
 
@@ -382,5 +442,20 @@ public class EmergencyConsultationServiceImpl extends BaseService implements Eme
         // In a real application, this would integrate with Google Meet API
         // For now, just generate a random UUID-based link
         return "https://meet.google.com/" + UUID.randomUUID().toString().substring(0, 8);
+    }
+
+    private EmergencyConsultationResponse mapToResponse(EmergencyConsultation consultation) {
+        if (consultation == null) {
+            return null;
+        }
+
+        return new EmergencyConsultationResponse(
+                consultation.getId(),
+                consultation.getDoctor().getId(),
+                consultation.getDoctor().getUser().getFirstName() + " " + consultation.getDoctor().getUser().getLastName(),
+                consultation.getDoctor().getSpecialistCategory().toString(),
+                consultation.getAvailability(),
+                consultation.getFee()
+        );
     }
 }

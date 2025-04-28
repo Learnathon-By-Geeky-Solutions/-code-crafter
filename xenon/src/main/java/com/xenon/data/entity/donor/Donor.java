@@ -38,7 +38,7 @@ public class Donor {
     @Column(nullable = false, length = 10)
     private Interested interested;
 
-    @Column(name = "last_donation")
+    @Column()
     private LocalDate lastDonation;
 
 
@@ -48,6 +48,7 @@ public class Donor {
         this.weight = weight;
         this.interested = interested;
         this.user = user;
+        this.lastDonation = null;
     }
 
     public DonorResponse toResponse() {

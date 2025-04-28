@@ -6,7 +6,7 @@ import com.xenon.core.domain.exception.UnauthorizedException;
 import com.xenon.core.domain.request.ambulance.AmbulanceBookingRequest;
 import com.xenon.core.domain.request.ambulance.UpdateBookingStatusRequest;
 import com.xenon.core.domain.response.PageResponseRequest;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.ambulance.Ambulance;
 import com.xenon.data.entity.ambulance.AmbulanceBooking;
 import com.xenon.data.entity.ambulance.AmbulanceBookingStatus;

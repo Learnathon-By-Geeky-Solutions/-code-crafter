@@ -7,7 +7,7 @@ import com.xenon.core.domain.request.healthAuthorization.CreateAlertRequest;
 import com.xenon.core.domain.request.healthAuthorization.CreateHealthAuthorizationAccountRequest;
 import com.xenon.core.domain.request.healthAuthorization.UpdateAlertRequest;
 import com.xenon.core.domain.response.alert.AlertResponse;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.alert.AlertTable;
 import com.xenon.data.entity.healthAuthorization.HealthAuthorization;
 import com.xenon.data.entity.user.UserRole;

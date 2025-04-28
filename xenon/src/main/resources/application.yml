@@ -12,12 +12,12 @@ spring:
       ddl-auto: none
 
 server:
-  port: 8080
+  port: ${SERVER_PORT}
 
 security:
   password:
-    strength: 10
+    strength: ${PASSWORD_STRENGTH}
   jwt:
-    secret-key: 038cbf91fa4189a412177d37a611effcb6be36c7fb97e5474d96c063faabce84
-    validity: 30
+    secret-key: ${JWT_SECRET_KEY}
+    validity: ${JWT_VALIDITY}
 

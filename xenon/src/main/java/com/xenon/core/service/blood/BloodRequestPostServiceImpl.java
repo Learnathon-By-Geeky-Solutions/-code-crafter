@@ -9,7 +9,7 @@ import com.xenon.core.domain.response.blood.BloodRequestPostCommentResponse;
 import com.xenon.core.domain.response.blood.BloodRequestPostDisplayResponse;
 import com.xenon.core.domain.response.blood.BloodRequestPostResponse;
 import com.xenon.core.domain.response.blood.projection.BloodMetaDataProjection;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.blood.BloodCommentTable;
 import com.xenon.data.entity.blood.BloodRequestPost;
 import com.xenon.data.entity.donor.BloodType;

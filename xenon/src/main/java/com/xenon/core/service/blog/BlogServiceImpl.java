@@ -7,7 +7,7 @@ import com.xenon.core.domain.request.blog.BlogPostRequest;
 import com.xenon.core.domain.response.blog.BlogResponseRequest;
 import com.xenon.core.domain.response.blog.comment.CommentResponseRequest;
 import com.xenon.core.domain.response.PageResponseRequest;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.blog.Blog;
 import com.xenon.data.entity.blog.Comment;
 import com.xenon.data.entity.blog.PostCategory;

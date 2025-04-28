@@ -11,7 +11,7 @@ import com.xenon.core.domain.response.ambulance.AmbulanceDetailedResponse;
 import com.xenon.core.domain.response.ambulance.AmbulanceListResponse;
 import com.xenon.core.domain.response.ambulance.AmbulanceResponse;
 import com.xenon.core.domain.response.ambulance.projection.AmbulanceMetadataProjection;
-import com.xenon.core.service.BaseService;
+import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.ambulance.*;
 import com.xenon.data.entity.user.UserRole;
 import com.xenon.data.repository.AmbulanceBookingRepository;
