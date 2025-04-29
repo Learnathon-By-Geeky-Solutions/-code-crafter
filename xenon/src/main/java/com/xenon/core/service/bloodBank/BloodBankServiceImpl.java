@@ -69,10 +69,9 @@ public class BloodBankServiceImpl extends BaseService implements BloodBankServic
 
     @Override
     public ResponseEntity<?> getBloodBankDetails(Long bloodBankId) {
-        try {
             BloodBank bloodBank = bloodBankRepository.findById(bloodBankId)
                     .orElseThrow(() -> new ClientException("Blood bank not found"));
-
+        try {
             BloodBankResponse response = convertToBloodBankResponse(bloodBank);
 
             return success("Blood bank details retrieved successfully", response);

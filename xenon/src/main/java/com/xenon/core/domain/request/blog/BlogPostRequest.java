@@ -1,7 +1,9 @@
 package com.xenon.core.domain.request.blog;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.xenon.data.entity.blog.Blog;
 import com.xenon.data.entity.blog.PostCategory;
+import com.xenon.data.entity.blog.doctorArticle.DoctorArticleCategory;
 import com.xenon.data.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +19,6 @@ public class BlogPostRequest {
     private String category;
     private String doctorCategory;  // Optional: for doctor articles
     private String media;
-    private Boolean isFeatured;  // Optional: only for admins to set
 
     public Blog toEntity(User user) {
         Blog blog = new Blog(
@@ -28,12 +29,14 @@ public class BlogPostRequest {
                 user
         );
 
+        // Only set doctor category if it's not null and valid
         if (doctorCategory != null && !doctorCategory.isEmpty()) {
-            blog.setDoctorCategory(doctorCategory);
-        }
-
-        if (isFeatured != null) {
-            blog.setIsFeatured(isFeatured);
+            try {
+                blog.setDoctorCategory(DoctorArticleCategory.valueOf(doctorCategory));
+            } catch (IllegalArgumentException e) {
+                // Skip setting the doctorCategory if it's invalid
+                // This prevents constraint violations
+            }
         }
 
         return blog;

@@ -19,7 +19,7 @@ CREATE TABLE alert_table
     severity_level VARCHAR(30) NOT NULL CHECK (severity_level IN ('HIGH', 'MEDIUM', 'LOW')),
     is_Active   BOOLEAN DEFAULT TRUE,
     start_date  DATE NOT NULL,
-    end_date    DATE NOT NULL,
+    end_date    DATE DEFAULT CURRENT_TIMESTAMP,
     created_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (health_authorization_id) REFERENCES health_authorization (id) ON DELETE SET NULL
@@ -27,15 +27,16 @@ CREATE TABLE alert_table
 
 CREATE TABLE user_alert_notification
 (
-    id               SERIAL PRIMARY KEY,
-    user_id          BIGINT       NOT NULL,
-    alert_id         BIGINT       NOT NULL,
-    is_read          BOOLEAN     DEFAULT FALSE,
-    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    read_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id         SERIAL PRIMARY KEY,
+    user_id    BIGINT NOT NULL,
+    alert_id   BIGINT NOT NULL,
+    is_read    BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    read_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (alert_id) REFERENCES alert_table (id) ON DELETE SET NULL,
-    FOREIGN KEY (user_id) REFERENCES table_user (id) ON DELETE SET NULL
+    -- Foreign key constraints without naming
+    FOREIGN KEY (alert_id) REFERENCES alert_table(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES table_user(id) ON DELETE CASCADE
 );
 
 CREATE TABLE user_location

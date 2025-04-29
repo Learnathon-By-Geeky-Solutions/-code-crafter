@@ -17,8 +17,8 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByBlogOrderByCreatedAtDesc(Blog blog);
-    Page<Comment> findByBlogOrderByCreatedAtDesc(Blog blog, Pageable pageable);
-    Page<Comment> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
+    /*Page<Comment> findByBlogOrderByCreatedAtDesc(Blog blog, Pageable pageable);
+    Page<Comment> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);*/
     long countByBlog(Blog blog);
     void deleteAllByBlog(Blog blog);
 
@@ -34,8 +34,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             @Param("endDate") ZonedDateTime endDate
     );
 
-    // Count comments by user
-    long countByUser(User user);
+   /* // Count comments by user
+    long countByUser(User user);*/
 
     // Get most commented blogs
     @Query("SELECT c.blog, COUNT(c) as commentCount FROM Comment c GROUP BY c.blog ORDER BY commentCount DESC")

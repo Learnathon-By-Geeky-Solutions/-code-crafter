@@ -1,8 +1,10 @@
 package com.xenon.presenter.api.blog;
 
 import com.xenon.common.annotation.PreAuthorize;
+import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.request.blog.BlogPostRequest;
 import com.xenon.core.service.blog.doctorArticle.DoctorArticleService;
+import com.xenon.data.entity.blog.doctorArticle.DoctorArticleCategory;
 import com.xenon.data.entity.user.UserRole;
 import com.xenon.presenter.config.SecurityConfiguration;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -11,7 +13,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api/v1/doctor/articles")
@@ -22,21 +27,29 @@ public class DoctorArticleController {
     private final DoctorArticleService doctorArticleService;
 
     @PostMapping("/create")
-    @PreAuthorize(authorities = {UserRole.DOCTOR}, shouldCheckAccountStatus = true)
+    @PreAuthorize(authorities = {UserRole.DOCTOR, UserRole.ADMIN}, shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> createArticle(@RequestBody BlogPostRequest body) {
-        return doctorArticleService.createArticle(body);
+    public ResponseEntity<?> createArticle(
+            @RequestBody BlogPostRequest body,
+            @RequestParam String category) {
+        try {
+            // Convert string category to enum
+            DoctorArticleCategory doctorCategory = DoctorArticleCategory.valueOf(category);
+            return doctorArticleService.createArticle(body, doctorCategory);
+        } catch (IllegalArgumentException e) {
+            throw new com.xenon.core.domain.exception.ClientException("Invalid doctor category: " + category);
+        }
     }
 
-    @PostMapping("/create/{category}")
-    @PreAuthorize(authorities = {UserRole.DOCTOR}, shouldCheckAccountStatus = true)
+    /*@PostMapping("/create/{category}")
+    @PreAuthorize(authorities = {UserRole.DOCTOR, UserRole.ADMIN}, shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> createArticleWithCategory(
             @RequestBody BlogPostRequest body,
-            @PathVariable String category
+            @PathVariable DoctorArticleCategory category
     ) {
         return doctorArticleService.createArticleWithCategory(body, category);
-    }
+    }*/
 
     @GetMapping
     @PreAuthorize(shouldCheckAccountStatus = true)
@@ -67,36 +80,8 @@ public class DoctorArticleController {
         return doctorArticleService.getArticlesByDoctorCategory(category, pageable);
     }
 
-    @GetMapping("/featured")
-    @PreAuthorize(shouldCheckAccountStatus = true)
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> getFeaturedArticles(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String direction
-    ) {
-        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
-        return doctorArticleService.getFeaturedArticles(pageable);
-    }
 
-    @GetMapping("/featured/categories/{category}")
-    @PreAuthorize(shouldCheckAccountStatus = true)
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> getFeaturedArticlesByDoctorCategory(
-            @PathVariable String category,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String direction
-    ) {
-        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
-        return doctorArticleService.getFeaturedArticlesByDoctorCategory(category, pageable);
-    }
-
-    @GetMapping("/trending/{trendingBy}")
+    /*@GetMapping("/trending/{trendingBy}")
     @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> getTrendingArticles(
@@ -106,7 +91,7 @@ public class DoctorArticleController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return doctorArticleService.getTrendingArticles(trendingBy, pageable);
-    }
+    }*/
 
     @GetMapping("/search")
     @PreAuthorize(shouldCheckAccountStatus = true)
@@ -123,21 +108,6 @@ public class DoctorArticleController {
         return doctorArticleService.searchArticles(query, pageable);
     }
 
-    @GetMapping("/search/categories/{category}")
-    @PreAuthorize(shouldCheckAccountStatus = true)
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> searchArticlesByDoctorCategory(
-            @RequestParam String query,
-            @PathVariable String category,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String direction
-    ) {
-        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
-        return doctorArticleService.searchArticlesByDoctorCategory(query, category, pageable);
-    }
 
     @GetMapping("/{id}")
     @PreAuthorize(shouldCheckAccountStatus = true)
@@ -147,19 +117,19 @@ public class DoctorArticleController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize(authorities = {UserRole.DOCTOR}, shouldCheckAccountStatus = true)
+    @PreAuthorize(authorities = {UserRole.DOCTOR, UserRole.ADMIN}, shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> updateArticle(@PathVariable Long id, @RequestBody BlogPostRequest body) {
         return doctorArticleService.updateArticle(id, body);
     }
 
     @PutMapping("/{id}/categories/{category}")
-    @PreAuthorize(authorities = {UserRole.DOCTOR}, shouldCheckAccountStatus = true)
+    @PreAuthorize(authorities = {UserRole.DOCTOR, UserRole.ADMIN}, shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> updateArticleWithCategory(
             @PathVariable Long id,
             @RequestBody BlogPostRequest body,
-            @PathVariable String category
+            @RequestParam DoctorArticleCategory category
     ) {
         return doctorArticleService.updateArticleWithCategory(id, body, category);
     }

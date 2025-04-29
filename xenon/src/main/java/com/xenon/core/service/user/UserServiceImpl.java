@@ -9,6 +9,7 @@ import com.xenon.core.domain.request.user.UpdateUserLatitudeLongitude;
 import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.location.Upazila;
 import com.xenon.data.entity.user.User;
+import com.xenon.data.entity.user.UserRole;
 import com.xenon.data.repository.OfflineAppointmentTableRepository;
 import com.xenon.data.repository.DoctorScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +30,12 @@ public class UserServiceImpl extends BaseService implements UserService {
     private final OfflineAppointmentTableRepository offlineAppointmentTableRepository;
 
     @Override
-    public ResponseEntity<?> createAccount(CreateAccountRequest body) {
+    public ResponseEntity<?> createAccount(CreateAccountRequest body, UserRole role) {
+        if (role == null) throw requiredField("role");
         validateCreateAccountRequest(body);
 
         try {
-            userRepository.save(body.toEntity(passwordEncoder));
+            userRepository.save(body.toEntity(passwordEncoder, role));
             return success("Account created successfully", null);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -89,7 +91,6 @@ public class UserServiceImpl extends BaseService implements UserService {
     private void validateCreateAccountRequest(CreateAccountRequest body) {
         super.validateBody(body);
 
-        if (body.getRole() == null) throw requiredField("role");
         if (isNullOrBlank(body.getPhone())) throw requiredField("phone");
         if (!PHONE_PATTERN.matcher(body.getPhone()).matches()) throw clientException("Invalid phone number");
         if (userRepository.existsByPhone(body.getPhone())) throw clientException("Phone number already exists!");

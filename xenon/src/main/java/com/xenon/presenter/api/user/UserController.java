@@ -5,6 +5,7 @@ import com.xenon.core.domain.request.user.CreateAccountRequest;
 import com.xenon.core.domain.request.user.UpdateAccountRequest;
 import com.xenon.core.domain.request.user.UpdateUserLatitudeLongitude;
 import com.xenon.core.service.user.UserService;
+import com.xenon.data.entity.user.UserRole;
 import com.xenon.presenter.config.SecurityConfiguration;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +23,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("sign-up")
-    public ResponseEntity<?> createAccount(@Nullable @RequestBody CreateAccountRequest body) {
-        return userService.createAccount(body);
+    public ResponseEntity<?> createAccount(@Nullable
+    @RequestParam UserRole role, @RequestBody CreateAccountRequest body) {
+        return userService.createAccount(body, role);
     }
 
 

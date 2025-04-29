@@ -101,21 +101,6 @@ public class BlogController {
         return blogService.searchBlogs(query, pageable);
     }
 
-    @GetMapping("/search/category/{category}")
-    @PreAuthorize(shouldCheckAccountStatus = true)
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> searchBlogsByCategory(
-            @RequestParam String query,
-            @PathVariable String category,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String direction
-    ) {
-        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
-        return blogService.searchBlogsByCategory(query, category, pageable);
-    }
 
     @GetMapping("/trending/{trendingBy}")
     @PreAuthorize(shouldCheckAccountStatus = true)
@@ -129,44 +114,6 @@ public class BlogController {
         return blogService.getTrendingBlogs(trendingBy, pageable);
     }
 
-    @GetMapping("/featured")
-    @PreAuthorize(shouldCheckAccountStatus = true)
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> getFeaturedBlogs(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String direction
-    ) {
-        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
-        return blogService.getFeaturedBlogs(pageable);
-    }
-
-    @GetMapping("/featured/category/{category}")
-    @PreAuthorize(shouldCheckAccountStatus = true)
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> getFeaturedBlogsByCategory(
-            @PathVariable String category,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String direction
-    ) {
-        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
-        return blogService.getFeaturedBlogsByCategory(category, pageable);
-    }
-
-    @PutMapping("/featured/{id}")
-    @PreAuthorize(authorities = {UserRole.ADMIN}, shouldCheckAccountStatus = true)
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> setFeaturedStatus(
-            @PathVariable Long id,
-            @RequestParam boolean featured
-    ) {
-        return blogService.setFeaturedStatus(id, featured);
-    }
 
     @PutMapping("/{id}")
     @PreAuthorize(shouldCheckAccountStatus = true)

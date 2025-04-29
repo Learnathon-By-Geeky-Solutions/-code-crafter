@@ -8,13 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 public interface CommentService {
     ResponseEntity<?> createCommentRequest(Long blogId, CreateCommentRequest body);
 
-    ResponseEntity<?> getCommentsByBlogId(Long blogId);
+   /* ResponseEntity<?> getCommentsByBlogId(Long blogId);
 
     ResponseEntity<?> getCommentsByBlogId(Long blogId, Pageable pageable);
 
     ResponseEntity<?> getRecentCommentsByBlogId(Long blogId, int limit);
 
-    ResponseEntity<?> getUserComments(Pageable pageable);
+    ResponseEntity<?> getUserComments(Pageable pageable);*/
 
     @Transactional
     ResponseEntity<?> updateComment(Long commentId, CreateCommentRequest commentDto);
@@ -22,5 +22,5 @@ public interface CommentService {
     @Transactional
     ResponseEntity<?> deleteComment(Long commentId);
 
-    ResponseEntity<?> countCommentsByBlogId(Long blogId);
+//    ResponseEntity<?> countCommentsByBlogId(Long blogId);
 }

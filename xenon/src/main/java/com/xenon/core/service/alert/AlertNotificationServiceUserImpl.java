@@ -59,7 +59,7 @@ public class AlertNotificationServiceUserImpl extends BaseService implements Ale
     @Override
     @Async
     @Transactional
-    public List<UserAlertNotificationResponse> processNewLocationForAlerts(Long userId, double latitude, double longitude) {
+    public void processNewLocationForAlerts(Long userId, double latitude, double longitude) {
         try {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new ClientException("User not found"));
@@ -90,10 +90,8 @@ public class AlertNotificationServiceUserImpl extends BaseService implements Ale
                 }
             }
 
-            return newNotifications;
         } catch (Exception e) {
             log.error("Error processing user location for alerts: {}", e.getMessage(), e);
-            return List.of();
         }
     }
 

@@ -18,5 +18,4 @@ public interface EmergencyConsultationTableRepository extends JpaRepository<Emer
     List<EmergencyConsultationAppointmentTable> findByEmergencyConsultationAndAppointmentStatus(
             EmergencyConsultation emergencyConsultation, AppointmentStatus status);
 
-    List<EmergencyConsultationAppointmentTable> findByPaymentStatus(String paymentStatus);
 }

@@ -4,6 +4,7 @@ import com.xenon.common.annotation.PreAuthorize;
 import com.xenon.core.domain.request.ambulance.AmbulanceBookingRequest;
 import com.xenon.core.domain.request.ambulance.UpdateBookingStatusRequest;
 import com.xenon.core.service.ambulance.AmbulanceBookingService;
+import com.xenon.data.entity.ambulance.AmbulanceBookingStatus;
 import com.xenon.data.entity.user.UserRole;
 import com.xenon.presenter.config.SecurityConfiguration;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -33,8 +34,10 @@ public class AmbulanceBookingController {
     @PutMapping("update-status")
     @PreAuthorize(authorities = {UserRole.AMBULANCE, UserRole.ADMIN}, shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<?> updateBookingStatus(@Nullable @RequestBody UpdateBookingStatusRequest body) {
-        return ambulanceBookingService.updateBookingStatus(body);
+    public ResponseEntity<?> updateBookingStatus(@Nullable
+                                                 @RequestParam AmbulanceBookingStatus status,
+                                                 @RequestBody UpdateBookingStatusRequest body) {
+        return ambulanceBookingService.updateBookingStatus(body, status);
     }
 
     @GetMapping("user-bookings")

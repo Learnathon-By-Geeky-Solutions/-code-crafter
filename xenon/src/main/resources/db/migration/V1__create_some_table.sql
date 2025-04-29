@@ -30,7 +30,7 @@ CREATE TABLE table_user
     password   VARCHAR(255)                                          NOT NULL,
     role       VARCHAR(20) CHECK (role IN ('USER', 'DOCTOR', 'HOSPITAL', 'HEALTH_AUTHORIZATION', 'ADMIN', 'BLOOD_BANK',
                                            'AMBULANCE', 'PHARMACY')) NOT NULL DEFAULT 'USER',
-    status     VARCHAR(10) CHECK (status IN ('ACTIVE', 'INACTIVE', 'BANNED')) DEFAULT 'ACTIVE',
+    status     VARCHAR(20) CHECK (status IN ('ACTIVE', 'INACTIVE', 'BANNED')) DEFAULT 'ACTIVE',
     upazila_id BIGINT,
     area       VARCHAR(255),
     latitude   DOUBLE PRECISION,
@@ -43,9 +43,9 @@ CREATE TABLE table_user
 
 CREATE TABLE donor
 (
-    id         BIGSERIAL PRIMARY KEY,
-    user_id    BIGINT      NOT NULL UNIQUE,
-    blood_type VARCHAR(10) NOT NULL CHECK (
+    id            BIGSERIAL PRIMARY KEY,
+    user_id       BIGINT      NOT NULL UNIQUE,
+    blood_type    VARCHAR(10) NOT NULL CHECK (
         blood_type IN (
                        'A_POS', 'A_NEG',
                        'B_POS', 'B_NEG',
@@ -53,9 +53,9 @@ CREATE TABLE donor
                        'O_POS', 'O_NEG'
             )
         ),
-    age        INT         NOT NULL,
-    weight     INT         NOT NULL,
-    interested VARCHAR(10) CHECK (interested IN ('YES', 'NO')),
+    age           INT         NOT NULL,
+    weight        INT         NOT NULL,
+    interested    VARCHAR(10) CHECK (interested IN ('YES', 'NO')),
     last_donation DATE,
 
     FOREIGN KEY (user_id) REFERENCES table_user (id) ON DELETE SET NULL
@@ -114,9 +114,9 @@ CREATE TABLE ambulance
 (
     id                   BIGSERIAL PRIMARY KEY,
     user_id              BIGINT UNIQUE,
-    ambulance_type       VARCHAR(10)   NOT NULL CHECK (ambulance_type IN ('GENERAL', 'ICU', 'FREEZING')),
+    ambulance_type       VARCHAR(30)   NOT NULL CHECK (ambulance_type IN ('GENERAL', 'ICU', 'FREEZING')),
     ambulance_number     VARCHAR(30)   NOT NULL UNIQUE,
-    ambulance_status     VARCHAR(10)   NOT NULL CHECK (ambulance_status IN ('AVAILABLE', 'UNAVAILABLE')),
+    ambulance_status     VARCHAR(25)   NOT NULL CHECK (ambulance_status IN ('AVAILABLE', 'UNAVAILABLE')),
     about                VARCHAR(1000) NOT NULL,
     service_offers       VARCHAR(500)  NOT NULL,
     hospital_affiliation VARCHAR(500),
@@ -144,24 +144,28 @@ CREATE TABLE ambulance_review
 
 CREATE TABLE blog
 (
-    id         BIGSERIAL PRIMARY KEY,
-    user_id    BIGINT        NOT NULL,
-    title      VARCHAR(100)  NOT NULL,
-    content    VARCHAR(1000) NOT NULL,
-    category   VARCHAR(30)   NOT NULL,
-    media      VARCHAR(255),
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES table_user (id) ON DELETE SET NULL
+    id              SERIAL PRIMARY KEY,
+    user_id         BIGINT        NOT NULL,
+    title           VARCHAR(200)  NOT NULL,
+    content         VARCHAR(3000) NOT NULL,
+    category        VARCHAR(50)  CHECK (category IS NULL OR category IN ('MEDICAL_TIPS',  'BLOOD_REQUEST', 'QUESTION', 'NEWS', 'NEED_HELP',  'DOCTOR_ARTICLE'  )),
+    doctor_category VARCHAR(50)  CHECK (doctor_category IS NULL OR doctor_category IN ('MENTAL_HEALTH', 'PHYSICAL_HEALTH','PREVENTIVE_CARE', 'NUTRITION','ALTERNATIVE_MEDICINE', 'MEDICAL_RESEARCH', 'FITNESS')),
+    media           TEXT,
+    view_count      INTEGER     DEFAULT 0,
+    created_at      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES table_user (id) ON DELETE CASCADE
 );
+
 
 CREATE TABLE blog_like
 (
     id      BIGSERIAL PRIMARY KEY,
     blog_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
-    FOREIGN KEY (blog_id) REFERENCES blog (id) ON DELETE SET NULL,
-    FOREIGN KEY (user_id) REFERENCES table_user (id) ON DELETE SET NULL
+    FOREIGN KEY (blog_id) REFERENCES blog (id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES table_user (id) ON DELETE CASCADE
 );
 
 CREATE TABLE comment
@@ -331,7 +335,8 @@ CREATE TABLE specialist_consultation
     status       VARCHAR(20) NOT NULL CHECK (status IN ('ACTIVE', 'INACTIVE')),
     availability VARCHAR(20) NOT NULL CHECK (availability IN ('AVAILABLE', 'UNAVAILABLE')),
     day_date     VARCHAR(10) NOT NULL CHECK (day_date IN (
-        'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY')
+                                                          'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY',
+                                                          'SATURDAY', 'SUNDAY')
         ),
     start_time   TIME        NOT NULL,
     end_time     TIME        NOT NULL,

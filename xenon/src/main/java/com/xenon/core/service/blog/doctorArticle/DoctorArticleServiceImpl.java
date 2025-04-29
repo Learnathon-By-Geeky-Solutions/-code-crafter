@@ -32,32 +32,62 @@ public class DoctorArticleServiceImpl extends BaseService implements DoctorArtic
     private final BlogRepository blogRepository;
 
     @Override
-    public ResponseEntity<?> createArticle(BlogPostRequest body) {
-        if (getCurrentUser().getRole() != UserRole.DOCTOR)
-            throw new UnauthorizedException("Only doctors can create articles");
-
-        body.setCategory(PostCategory.DOCTOR_ARTICLE.name());
-
-        return blogService.createBlogPostRequest(body);
-    }
-
-    @Override
-    public ResponseEntity<?> createArticleWithCategory(BlogPostRequest body, String doctorCategory) {
+    public ResponseEntity<?> createArticle(BlogPostRequest body, DoctorArticleCategory doctorCategory) {
         if (getCurrentUser().getRole() != UserRole.DOCTOR)
             throw new UnauthorizedException("Only doctors can create articles");
 
         try {
-            // Validate doctor category
-            DoctorArticleCategory.valueOf(doctorCategory);
-        } catch (IllegalArgumentException e) {
-            throw clientException("Invalid doctor category: " + doctorCategory);
+            // Debug: Print the received doctorCategory
+            log.info("Received doctorCategory enum: {}", doctorCategory);
+            log.info("Received doctorCategory name: {}", doctorCategory.name());
+            log.info("Received doctorCategory ordinal: {}", doctorCategory.ordinal());
+
+            body.setCategory(PostCategory.DOCTOR_ARTICLE.name());
+            // Use the enum name directly
+            body.setDoctorCategory(doctorCategory.name());
+
+            log.info("Setting doctor article with category={}, doctorCategory={}",
+                    body.getCategory(), body.getDoctorCategory());
+
+            // Create the blog entity manually to ensure correct doctor category
+            Blog blog = new Blog(
+                    body.getTitle(),
+                    body.getContent(),
+                    PostCategory.DOCTOR_ARTICLE,
+                    doctorCategory,  // Pass the enum directly
+                    body.getMedia(),
+                    getCurrentUser()
+            );
+
+            // Save and verify the created entity
+            Blog savedBlog = blogRepository.save(blog);
+            log.info("Saved blog with doctorCategory: {}", savedBlog.getDoctorCategory());
+
+            return success("Blog post created successfully", null);
+        } catch (Exception e) {
+            log.error("Error creating doctor article: " + e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
+
+
+    /*@Override
+    public ResponseEntity<?> createArticleWithCategory(BlogPostRequest body, DoctorArticleCategory doctorCategory) {
+        if (getCurrentUser().getRole() != UserRole.DOCTOR)
+            throw new UnauthorizedException("Only doctors can create articles");
+
+        if (doctorCategory == null)throw clientException("Invalid doctor category: " + doctorCategory);
+
+        try {
+            body.setCategory(PostCategory.DOCTOR_ARTICLE.name());
+            body.setDoctorCategory(doctorCategory);
+            return success("Blog post created successfully", null);
+        }catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new ApiException(e);
         }
 
-        body.setCategory(PostCategory.DOCTOR_ARTICLE.name());
-        body.setDoctorCategory(doctorCategory);
-
-        return blogService.createBlogPostRequest(body);
-    }
+    }*/
 
     @Override
     public ResponseEntity<?> getAllArticles(Pageable pageable) {
@@ -79,28 +109,7 @@ public class DoctorArticleServiceImpl extends BaseService implements DoctorArtic
         }
     }
 
-    @Override
-    public ResponseEntity<?> getFeaturedArticles(Pageable pageable) {
-        Page<Blog> blogPage = blogRepository.findByIsFeaturedTrueAndCategory(PostCategory.DOCTOR_ARTICLE, pageable);
-        return processArticlePage(blogPage, pageable);
-    }
-
-    @Override
-    public ResponseEntity<?> getFeaturedArticlesByDoctorCategory(String doctorCategory, Pageable pageable) {
-        try {
-            // Validate doctor category
-            DoctorArticleCategory.valueOf(doctorCategory);
-
-            Page<Blog> blogPage = blogRepository.findByCategoryAndDoctorCategoryAndIsFeaturedTrue(
-                    PostCategory.DOCTOR_ARTICLE, doctorCategory, pageable);
-
-            return processArticlePage(blogPage, pageable);
-        } catch (IllegalArgumentException e) {
-            throw clientException("Invalid doctor category: " + doctorCategory);
-        }
-    }
-
-    @Override
+    /*@Override
     public ResponseEntity<?> getTrendingArticles(String trendingBy, Pageable pageable) {
         Page<Blog> originalPage;
 
@@ -132,7 +141,7 @@ public class DoctorArticleServiceImpl extends BaseService implements DoctorArtic
 
         return processArticlePage(filteredPage, pageable);
     }
-
+*/
     @Override
     public ResponseEntity<?> searchArticles(String query, Pageable pageable) {
         Page<Blog> originalPage = blogRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(
@@ -154,35 +163,6 @@ public class DoctorArticleServiceImpl extends BaseService implements DoctorArtic
     }
 
     @Override
-    public ResponseEntity<?> searchArticlesByDoctorCategory(String query, String doctorCategory, Pageable pageable) {
-        try {
-            // Validate doctor category
-            DoctorArticleCategory.valueOf(doctorCategory);
-
-            Page<Blog> originalPage = blogRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(
-                    query, query, pageable);
-
-            // Filter to only include doctor articles with the specified category
-            List<Blog> filteredContent = originalPage.getContent().stream()
-                    .filter(blog ->
-                            PostCategory.DOCTOR_ARTICLE.equals(blog.getCategory()) &&
-                                    doctorCategory.equals(blog.getDoctorCategory()))
-                    .collect(Collectors.toList());
-
-            // Create a new Page object with the filtered content
-            Page<Blog> filteredPage = new PageImpl<>(
-                    filteredContent,
-                    pageable,
-                    filteredContent.size()
-            );
-
-            return processArticlePage(filteredPage, pageable);
-        } catch (IllegalArgumentException e) {
-            throw clientException("Invalid doctor category: " + doctorCategory);
-        }
-    }
-
-    @Override
     public ResponseEntity<?> updateArticle(Long id, BlogPostRequest body) {
         if (isNotDoctor())
             throw new UnauthorizedException("Only doctors can update articles");
@@ -192,21 +172,22 @@ public class DoctorArticleServiceImpl extends BaseService implements DoctorArtic
     }
 
     @Override
-    public ResponseEntity<?> updateArticleWithCategory(Long id, BlogPostRequest body, String doctorCategory) {
+    public ResponseEntity<?> updateArticleWithCategory(Long id, BlogPostRequest body, DoctorArticleCategory doctorCategory) {
         if (isNotDoctor())
             throw new UnauthorizedException("Only doctors can update articles");
 
-        try {
-            // Validate doctor category
-            DoctorArticleCategory.valueOf(doctorCategory);
-        } catch (IllegalArgumentException e) {
-            throw clientException("Invalid doctor category: " + doctorCategory);
-        }
+       if (doctorCategory == null)throw clientException("Invalid doctor category: " + doctorCategory);
 
-        body.setCategory(PostCategory.DOCTOR_ARTICLE.name());
-        body.setDoctorCategory(doctorCategory);
+       try {
+           body.setCategory(PostCategory.DOCTOR_ARTICLE.name());
+           body.setDoctorCategory(String.valueOf(doctorCategory));
+           return blogService.updateBlog(id, body);
+       }catch (Exception e) {
+           log.error(e.getMessage(), e);
+           throw new ApiException(e);
+       }
 
-        return blogService.updateBlog(id, body);
+
     }
 
     @Override

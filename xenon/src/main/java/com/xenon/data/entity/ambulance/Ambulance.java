@@ -26,17 +26,17 @@ public class Ambulance {
     @Column(nullable = false, length = 10)
     private AmbulanceType ambulanceType;
 
-    @Column(length = 30, nullable = false, unique = true)
+    @Column()
     private String ambulanceNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false)
     private AmbulanceStatus ambulanceStatus;
 
-    @Column(length = 1000, nullable = false)
+    @Column()
     private String about;
 
-    @Column(length = 500, nullable = false)
+    @Column()
     private String service_offers;
 
     @Column(length = 500)

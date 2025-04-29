@@ -23,16 +23,7 @@ public interface BlogService {
     // New methods for enhanced functionality
     ResponseEntity<?> searchBlogs(String query, Pageable pageable);
 
-    ResponseEntity<?> searchBlogsByCategory(String query, String category, Pageable pageable);
-
     ResponseEntity<?> getTrendingBlogs(String trendingBy, Pageable pageable);
-
-    ResponseEntity<?> getFeaturedBlogs(Pageable pageable);
-
-    ResponseEntity<?> getFeaturedBlogsByCategory(String category, Pageable pageable);
-
-    @Transactional
-    ResponseEntity<?> setFeaturedStatus(Long id, boolean isFeatured);
 
     // View count increment
     @Transactional

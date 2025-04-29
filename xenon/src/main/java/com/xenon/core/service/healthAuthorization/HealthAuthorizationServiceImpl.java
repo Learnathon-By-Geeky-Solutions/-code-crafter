@@ -178,13 +178,12 @@ public class HealthAuthorizationServiceImpl extends BaseService implements Healt
 
     @Override
     public ResponseEntity<?> getAllAlerts() {
-        ensureUserIsHealthAuthorization();
 
+
+        HealthAuthorization healthAuthorization = healthAuthorizationRepository
+                .findByUserId(getCurrentUser().getId())
+                .orElseThrow(() -> new ClientException("Health Authorization not found"));
         try {
-            HealthAuthorization healthAuthorization = healthAuthorizationRepository
-                    .findByUserId(getCurrentUser().getId())
-                    .orElseThrow(() -> new ClientException("Health Authorization not found"));
-
             List<AlertTable> alerts = alertTableRepository
                     .findByHealthAuthorization_IdAndIsActiveTrue(healthAuthorization.getId());
 
@@ -203,7 +202,6 @@ public class HealthAuthorizationServiceImpl extends BaseService implements Healt
     public ResponseEntity<?> getAlertById(Long alertId) {
         ensureUserIsHealthAuthorization();
 
-        try {
             AlertTable alert = alertTableRepository.findById(alertId)
                     .orElseThrow(() -> new ClientException("Alert not found"));
 
@@ -213,10 +211,6 @@ public class HealthAuthorizationServiceImpl extends BaseService implements Healt
             }
 
             return success("Alert retrieved successfully", AlertResponse.fromEntity(alert));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new ApiException(e);
-        }
     }
 
     private void validateCreateHealthAuthorizationRequest(CreateHealthAuthorizationAccountRequest body) {

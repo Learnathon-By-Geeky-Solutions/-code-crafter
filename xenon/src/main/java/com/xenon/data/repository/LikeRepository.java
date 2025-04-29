@@ -18,8 +18,8 @@ import java.util.Optional;
 public interface LikeRepository extends JpaRepository<Like, Long> {
 
     Optional<Like> findByUserAndBlog(User user, Blog blog);
-    List<Like> findByBlog(Blog blog);
-    Page<Like> findByBlog(Blog blog, Pageable pageable);
+    /*List<Like> findByBlog(Blog blog);
+    Page<Like> findByBlog(Blog blog, Pageable pageable);*/
     Page<Like> findByUser(User user, Pageable pageable);
     long countByBlog(Blog blog);
     void deleteAllByBlog(Blog blog);

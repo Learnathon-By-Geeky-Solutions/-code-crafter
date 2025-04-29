@@ -29,14 +29,14 @@ public class CommentController {
         return commentService.createCommentRequest(blogId, body);
     }
 
-    @GetMapping("/blogs/{blogId}/comments")
+   /* @GetMapping("/blogs/{blogId}/comments")
     @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> getCommentsByBlogId(@PathVariable Long blogId) {
         return commentService.getCommentsByBlogId(blogId);
-    }
+    }*/
 
-    @GetMapping("/blogs/{blogId}/comments/paginated")
+   /* @GetMapping("/blogs/{blogId}/comments/paginated")
     @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> getCommentsByBlogIdPaginated(
@@ -50,8 +50,8 @@ public class CommentController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
         return commentService.getCommentsByBlogId(blogId, pageable);
     }
-
-    @GetMapping("/blogs/{blogId}/comments/recent")
+*/
+   /* @GetMapping("/blogs/{blogId}/comments/recent")
     @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> getRecentCommentsByBlogId(
@@ -59,9 +59,9 @@ public class CommentController {
             @RequestParam(defaultValue = "5") int limit
     ) {
         return commentService.getRecentCommentsByBlogId(blogId, limit);
-    }
+    }*/
 
-    @GetMapping("/user/comments")
+   /* @GetMapping("/user/comments")
     @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> getUserComments(
@@ -73,7 +73,7 @@ public class CommentController {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
         return commentService.getUserComments(pageable);
-    }
+    }*/
 
     @PutMapping("/comments/{commentId}")
     @PreAuthorize(shouldCheckAccountStatus = true)
@@ -89,10 +89,10 @@ public class CommentController {
         return commentService.deleteComment(commentId);
     }
 
-    @GetMapping("/blogs/{blogId}/comments/count")
+   /* @GetMapping("/blogs/{blogId}/comments/count")
     @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> countCommentsByBlogId(@PathVariable Long blogId) {
         return commentService.countCommentsByBlogId(blogId);
-    }
+    }*/
 }

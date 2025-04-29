@@ -4,14 +4,17 @@ import com.xenon.core.domain.response.ambulance.projection.AmbulanceMetadataProj
 import com.xenon.data.entity.ambulance.Ambulance;
 import com.xenon.data.entity.ambulance.AmbulanceStatus;
 import com.xenon.data.entity.ambulance.AmbulanceType;
+import com.xenon.data.entity.hospital.Hospital;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AmbulanceRepository extends JpaRepository<Ambulance, Long> {
@@ -19,11 +22,11 @@ public interface AmbulanceRepository extends JpaRepository<Ambulance, Long> {
 
     @Query(
             value = """
-                    SELECT COUNT(*)       AS ambulanceCount,
-                           SUM(doctors) as doctorCount
-                    FROM ambulance a
-                    WHERE a.ambulance_type = :type;
-                    """,
+            SELECT COUNT(*) AS ambulanceCount,
+                   COALESCE(SUM(doctors), 0) as doctorCount
+            FROM ambulance a
+            WHERE a.ambulance_type = :type;
+            """,
             nativeQuery = true
     )
     AmbulanceMetadataProjection getAmbulanceMetadata(@Param("type") String ambulanceType);
@@ -52,4 +55,9 @@ public interface AmbulanceRepository extends JpaRepository<Ambulance, Long> {
 
     @Query("SELECT COUNT(ar) FROM AmbulanceReview ar WHERE ar.ambulance.id = :ambulanceId")
     Integer getReviewCountByAmbulanceId(@Param("ambulanceId") Long ambulanceId);
+
+    Optional<Ambulance> findByUserId(Long id);
+
+
+//    <T> ScopedValue<T> findByUserId(Long id);
 }

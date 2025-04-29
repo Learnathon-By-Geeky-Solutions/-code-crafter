@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/-code-crafter.iml" filepath="$PROJECT_DIR$/.idea/-code-crafter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/xenon/xenon.iml" filepath="$PROJECT_DIR$/xenon/xenon.iml" />
     </modules>
   </component>
 </project>

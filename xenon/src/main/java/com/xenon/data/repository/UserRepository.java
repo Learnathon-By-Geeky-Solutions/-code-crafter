@@ -1,6 +1,7 @@
 package com.xenon.data.repository;
 
 import com.xenon.data.entity.user.User;
+import com.xenon.data.entity.user.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +14,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByPhone(String phone);
 
     boolean existsByEmail(String email);
+
 }

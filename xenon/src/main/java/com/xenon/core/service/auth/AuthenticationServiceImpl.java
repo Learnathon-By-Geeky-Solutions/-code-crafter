@@ -41,8 +41,7 @@ public class AuthenticationServiceImpl extends BaseService implements Authentica
         if (isNullOrBlank(body.getPhone())) throw requiredField("phone");
         if (!PHONE_PATTERN.matcher(body.getPhone()).matches()) throw clientException("Invalid phone number");
         User user = userRepository.findByPhone(body.getPhone()).orElseThrow(() -> new AuthException("Phone number does not exist!"));
-//        if (!passwordEncoder.matches(body.getPassword(), user.getPassword())) throw clientException("Incorrect password entered");
-        if (!Objects.equals(body.getPassword(), user.getPassword())) throw clientException("Incorrect password entered");
+        if (!passwordEncoder.matches(body.getPassword(), user.getPassword())) throw clientException("Incorrect password entered");
         if (isNullOrBlank(body.getPassword())) throw requiredField("password");
     }
 }

@@ -34,7 +34,7 @@ public class HealthAuthorizationController {
     }
 
     @PostMapping("alert")
-    @PreAuthorize(authorities = {UserRole.HEALTH_AUTHORIZATION, UserRole.ADMIN}, shouldCheckAccountStatus = true)
+    @PreAuthorize(authorities = {UserRole.HEALTH_AUTHORIZATION}, shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Create Alert",
             description = "Creates a new health alert with geolocation information")

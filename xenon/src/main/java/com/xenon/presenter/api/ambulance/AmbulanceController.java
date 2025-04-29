@@ -33,14 +33,14 @@ public class AmbulanceController {
     }
 
     @PostMapping("create-ambulance-review")
-    @PreAuthorize(shouldCheckAccountStatus = true)
+    @PreAuthorize(authorities = {UserRole.AMBULANCE, UserRole.ADMIN, UserRole.USER}, shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> createAmbulanceReviewRequest(@Nullable @RequestBody AmbulanceReviewRequest body) {
         return ambulanceService.createAmbulanceReviewRequest(body);
     }
 
     @GetMapping("list")
-    @PreAuthorize(shouldCheckAccountStatus = true)
+    @PreAuthorize(authorities = {UserRole.AMBULANCE, UserRole.ADMIN, UserRole.USER},shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> getAmbulanceList(
             @RequestParam AmbulanceType type,

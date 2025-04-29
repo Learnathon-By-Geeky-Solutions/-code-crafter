@@ -1,5 +1,6 @@
 package com.xenon.data.entity.blog;
 
+import com.xenon.data.entity.blog.doctorArticle.DoctorArticleCategory;
 import com.xenon.data.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,20 +31,17 @@ public class Blog {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column
     private PostCategory category;
 
-    @Column(length = 30)
-    private String doctorCategory;
+    @Column(name = "doctor_category")
+    private DoctorArticleCategory doctorCategory;
 
-    @Column(length = 255)
+    @Column
     private String media;
 
     @Column
     private Integer viewCount = 0;
-
-    @Column(nullable = false)
-    private Boolean isFeatured = false;
 
     @Column(name = "created_at", updatable = false)
     private ZonedDateTime createdAt;
@@ -69,10 +67,9 @@ public class Blog {
         this.media = media;
         this.user = user;
         this.viewCount = 0;
-        this.isFeatured = false;
     }
 
-    public Blog(String title, String content, PostCategory category, String doctorCategory, String media, User user) {
+    public Blog(String title, String content, PostCategory category, DoctorArticleCategory doctorCategory, String media, User user) {
         this.title = title;
         this.content = content;
         this.category = category;
@@ -80,7 +77,6 @@ public class Blog {
         this.media = media;
         this.user = user;
         this.viewCount = 0;
-        this.isFeatured = false;
     }
 
     public void incrementViewCount() {

@@ -19,10 +19,6 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
     // Search functionality
     Page<Blog> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String titleQuery, String contentQuery, Pageable pageable);
 
-    // Search by category
-    Page<Blog> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCaseAndCategory(
-            String titleQuery, String contentQuery, PostCategory category, Pageable pageable);
-
     // Doctor article specific queries
     Page<Blog> findByCategoryAndDoctorCategory(PostCategory category, String doctorCategory, Pageable pageable);
 
@@ -35,14 +31,4 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
     @Query("SELECT b FROM Blog b LEFT JOIN Like l ON b.id = l.blog.id " +
             "GROUP BY b.id ORDER BY COUNT(l.id) DESC")
     Page<Blog> findTrendingByLikes(Pageable pageable);
-
-    // Featured blogs
-    Page<Blog> findByIsFeaturedTrue(Pageable pageable);
-
-    // Find featured by category
-    Page<Blog> findByIsFeaturedTrueAndCategory(PostCategory category, Pageable pageable);
-
-    // Find doctor articles with specific doctor category
-    Page<Blog> findByCategoryAndDoctorCategoryAndIsFeaturedTrue(
-            PostCategory category, String doctorCategory, Pageable pageable);
 }

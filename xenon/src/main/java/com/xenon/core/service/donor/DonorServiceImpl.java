@@ -67,6 +67,9 @@ public class DonorServiceImpl extends BaseService implements DonorService {
 
     @Override
     public ResponseEntity<?> getDonationHistory() {
+
+        donorRepository.findByUserId(getCurrentUser().getId())
+                .orElseThrow(() -> new ClientException("Donor not found"));
         BloodDonationHistoryMetaData metaData = bloodDonationHistoryRepository.getBloodDonationHistoryMetaData(getCurrentUser().getId());
 
         if (metaData == null) {
@@ -104,7 +107,6 @@ public class DonorServiceImpl extends BaseService implements DonorService {
 
     @Override
     public ResponseEntity<?> getDonorProfile() {
-        try {
             Donor donor = donorRepository.findByUserId(getCurrentUser().getId())
                     .orElseThrow(() -> new ClientException("Donor not found"));
 
@@ -116,8 +118,8 @@ public class DonorServiceImpl extends BaseService implements DonorService {
                     donor.getWeight(),
                     donor.getInterested(),
                     donor.getLastDonation(),
-                    donor.isAvailableForDonation()
-            );
+                    donor.isAvailableForDonation());
+        try{
 
             return success("Donor profile retrieved successfully", response);
         } catch (Exception e) {
@@ -173,7 +175,9 @@ public class DonorServiceImpl extends BaseService implements DonorService {
         if (body.getBloodType() == null) throw requiredField("Blood type");
         if (body.getInterested() == null) throw requiredField("Interested Choice");
         if (body.getAge() == null) throw requiredField("Age");
+        if (body.getAge() <= 18 || body.getAge() >= 60) throw clientException("Invalid age");
         if (body.getWeight() == null) throw requiredField("Weight");
+        if (body.getWeight() <= 40 || body.getWeight() >= 200) throw clientException("Invalid weight");
         if (!isValidNumber(body.getAge().toString())) throw clientException("Use only number for age");
         if (!isValidNumber(body.getWeight().toString())) throw clientException("Use only number for weight");
         if (donorRepository.existsByUserId(getCurrentUser().getId())) throw clientException("Donor already exists!");

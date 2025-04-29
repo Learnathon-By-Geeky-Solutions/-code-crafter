@@ -11,6 +11,7 @@ import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.blog.Blog;
 import com.xenon.data.entity.blog.Comment;
 import com.xenon.data.entity.blog.PostCategory;
+import com.xenon.data.entity.blog.doctorArticle.DoctorArticleCategory;
 import com.xenon.data.entity.doctor.Doctor;
 import com.xenon.data.entity.user.User;
 import com.xenon.data.entity.user.UserRole;
@@ -46,14 +47,7 @@ public class BlogServiceImpl extends BaseService implements BlogService {
         validateCreateBlogPostRequest(body);
 
         try {
-            Blog blog = body.toEntity(getCurrentUser());
-
-            // Check if this is an admin setting a featured post
-            if (body.getIsFeatured() != null && !getCurrentUser().getRole().equals(UserRole.ADMIN)) {
-                blog.setIsFeatured(false); // Only admins can set featured
-            }
-
-            blogRepository.save(blog);
+            blogRepository.save(body.toEntity(getCurrentUser()));
             return success("Blog post created successfully", null);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -105,13 +99,14 @@ public class BlogServiceImpl extends BaseService implements BlogService {
         blog.setCategory(PostCategory.valueOf(body.getCategory()));
         blog.setMedia(body.getMedia());
 
-        if (body.getDoctorCategory() != null && !body.getDoctorCategory().isEmpty()) {
-            blog.setDoctorCategory(body.getDoctorCategory());
-        }
-
-        // Only admin can update featured status
-        if (body.getIsFeatured() != null && getCurrentUser().getRole().equals(UserRole.ADMIN)) {
-            blog.setIsFeatured(body.getIsFeatured());
+        if (body.getDoctorCategory() != null) {
+            try {
+                blog.setDoctorCategory(DoctorArticleCategory.valueOf(body.getDoctorCategory()));
+            } catch (IllegalArgumentException e) {
+                throw clientException("Invalid doctor category: " + body.getDoctorCategory());
+            }
+        } else {
+            blog.setDoctorCategory(null);
         }
 
         try {
@@ -157,18 +152,6 @@ public class BlogServiceImpl extends BaseService implements BlogService {
         return processBlogPage(blogPage, pageable);
     }
 
-    @Override
-    public ResponseEntity<?> searchBlogsByCategory(String query, String category, Pageable pageable) {
-        try {
-            PostCategory postCategory = PostCategory.valueOf(category.toUpperCase());
-            Page<Blog> blogPage = blogRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCaseAndCategory(
-                    query, query, postCategory, pageable);
-
-            return processBlogPage(blogPage, pageable);
-        } catch (IllegalArgumentException e) {
-            throw clientException("Invalid category: " + category);
-        }
-    }
 
     @Override
     public ResponseEntity<?> getTrendingBlogs(String trendingBy, Pageable pageable) {
@@ -189,40 +172,6 @@ public class BlogServiceImpl extends BaseService implements BlogService {
         }
 
         return processBlogPage(blogPage, pageable);
-    }
-
-    @Override
-    public ResponseEntity<?> getFeaturedBlogs(Pageable pageable) {
-        Page<Blog> blogPage = blogRepository.findByIsFeaturedTrue(pageable);
-        return processBlogPage(blogPage, pageable);
-    }
-
-    @Override
-    public ResponseEntity<?> getFeaturedBlogsByCategory(String category, Pageable pageable) {
-        try {
-            PostCategory postCategory = PostCategory.valueOf(category.toUpperCase());
-            Page<Blog> blogPage = blogRepository.findByIsFeaturedTrueAndCategory(postCategory, pageable);
-
-            return processBlogPage(blogPage, pageable);
-        } catch (IllegalArgumentException e) {
-            throw clientException("Invalid category: " + category);
-        }
-    }
-
-    @Override
-    @Transactional
-    public ResponseEntity<?> setFeaturedStatus(Long id, boolean isFeatured) {
-        if (!getCurrentUser().getRole().equals(UserRole.ADMIN)) {
-            throw new UnauthorizedException("Only admins can set featured status");
-        }
-
-        Blog blog = blogRepository.findById(id)
-                .orElseThrow(() -> new ClientException("Blog not found with id: " + id));
-
-        blog.setIsFeatured(isFeatured);
-        blogRepository.save(blog);
-
-        return success("Featured status updated successfully", null);
     }
 
     @Override
@@ -251,10 +200,10 @@ public class BlogServiceImpl extends BaseService implements BlogService {
         }
 
         // Validate doctor category if provided
-        if (body.getDoctorCategory() != null && !body.getDoctorCategory().isEmpty()) {
+        if (body.getDoctorCategory() != null) {
             try {
                 // Validate that the category exists
-                Class.forName("com.xenon.data.entity.blog.DoctorArticleCategory")
+                Class.forName("com.xenon.data.entity.blog.doctorArticle.DoctorArticleCategory")
                         .getMethod("valueOf", String.class)
                         .invoke(null, body.getDoctorCategory());
             } catch (Exception e) {
@@ -326,7 +275,6 @@ public class BlogServiceImpl extends BaseService implements BlogService {
                 commentCount,
                 likeCount,
                 blog.getViewCount() != null ? blog.getViewCount() : 0,
-                blog.getIsFeatured() != null ? blog.getIsFeatured() : false,
                 commentResponseRequests,
                 blog.getCreatedAt(),
                 blog.getUpdatedAt(),

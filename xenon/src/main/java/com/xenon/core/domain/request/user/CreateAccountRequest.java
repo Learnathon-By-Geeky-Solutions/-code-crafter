@@ -15,9 +15,8 @@ public class CreateAccountRequest {
     private String phone;
     private String password;
     private String confirmPassword;
-    private UserRole role;
 
-    public User toEntity(@NonNull PasswordEncoder passwordEncoder) {
-        return new User(phone, passwordEncoder.encode(this.password),role);
+    public User toEntity(@NonNull PasswordEncoder passwordEncoder, UserRole role) {
+        return new User(phone, passwordEncoder.encode(this.password), role);
     }
 }

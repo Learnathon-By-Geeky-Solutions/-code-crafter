@@ -41,6 +41,7 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
     @Override
     public ResponseEntity<?> createAmbulanceRequest(CreateAmbulanceAccountRequest body) {
         validateCreateAmbulanceRequest(body);
+        userRepository.findById(getCurrentUser().getId()).orElseThrow(() -> new AuthException("User not found"));
 
         try {
             ambulanceRepository.save(body.toEntity(getCurrentUser()));
@@ -74,7 +75,7 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
 
     @Override
     public ResponseEntity<?> getAmbulanceList(AmbulanceType type, Pageable pageable) {
-        try {
+
             AmbulanceMetadataProjection metadata = ambulanceRepository.getAmbulanceMetadata(type.name());
             Page<Ambulance> ambulancesPage = ambulanceRepository.findAllByAmbulanceTypeAndAmbulanceStatus(
                     type, AmbulanceStatus.AVAILABLE, pageable);
@@ -90,7 +91,7 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
                     ambulancesPage.getTotalElements(),
                     ambulancesPage.getTotalPages()
             );
-
+        try {
             return success(
                     "Ambulance list retrieved successfully",
                     new AmbulanceListResponse(
@@ -107,7 +108,6 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
 
     @Override
     public ResponseEntity<?> getAmbulanceById(Long ambulanceId) {
-        try {
             Ambulance ambulance = ambulanceRepository.findById(ambulanceId)
                     .orElseThrow(() -> new ClientException("Ambulance not found"));
 
@@ -115,6 +115,7 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
             Double averageRating = ambulanceReviewRepository.getAverageRatingByAmbulanceId(ambulanceId);
             Integer totalReviews = ambulanceReviewRepository.getReviewCountByAmbulanceId(ambulanceId);
 
+            try {
             AmbulanceDetailedResponse response = new AmbulanceDetailedResponse(
                     ambulance.getId(),
                     ambulance.getUser().toResponse(),
@@ -145,7 +146,7 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
 
     @Override
     public ResponseEntity<?> getAmbulancesByArea(AmbulanceType type, String area, Pageable pageable) {
-        try {
+
             // Get ambulances by area
             Page<Ambulance> ambulancesPage = ambulanceRepository.findByAmbulanceTypeAndAreaContaining(
                     type, area, pageable);
@@ -164,7 +165,7 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
                     ambulancesPage.getTotalElements(),
                     ambulancesPage.getTotalPages()
             );
-
+        try {
             return success(
                     "Ambulances filtered by area retrieved successfully",
                     new AmbulanceListResponse(
@@ -181,11 +182,11 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
 
     @Override
     public ResponseEntity<?> getAmbulanceReviews(Long ambulanceId, Pageable pageable) {
-        try {
             // Check if ambulance exists
             if (!ambulanceRepository.existsById(ambulanceId)) {
                 throw new ClientException("Ambulance not found");
             }
+        try {
 
             Page<AmbulanceReview> reviewsPage = ambulanceReviewRepository.findAllByAmbulance_Id(ambulanceId, pageable);
 
@@ -210,7 +211,7 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
 
     @Override
     public ResponseEntity<?> updateAmbulanceStatus(Long ambulanceId, AmbulanceStatus status) {
-        try {
+
             Ambulance ambulance = ambulanceRepository.findById(ambulanceId)
                     .orElseThrow(() -> new ClientException("Ambulance not found"));
 
@@ -219,7 +220,7 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
                     !Objects.equals(ambulance.getUser().getId(), getCurrentUser().getId())) {
                 throw new UnauthorizedException("You are not authorized to update this ambulance status");
             }
-
+        try {
             ambulance.setAmbulanceStatus(status);
             ambulanceRepository.save(ambulance);
             return success("Ambulance status updated successfully", ambulance.toResponse());
@@ -244,7 +245,7 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
     private boolean canUserReviewAmbulance(Long userId, Long ambulanceId) {
         // Check if user has any completed bookings with this ambulance
         return !ambulanceBookingRepository.findByUser_IdAndAmbulance_IdAndStatus(
-                userId, ambulanceId, AmbulanceBookingStatus.COMPLETED).isEmpty();
+                userId, ambulanceId, AmbulanceBookingStatus.CONFIRMED).isEmpty();
     }
 
     private void validateCreateAmbulanceRequest(CreateAmbulanceAccountRequest body) {

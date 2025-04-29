@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateBookingStatusRequest {
     private Long bookingId;
-    private AmbulanceBookingStatus status;
 }

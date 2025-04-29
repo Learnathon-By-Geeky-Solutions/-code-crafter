@@ -2,6 +2,7 @@ package com.xenon.core.domain.response.blog;
 
 import com.xenon.core.domain.response.blog.comment.CommentResponseRequest;
 import com.xenon.data.entity.blog.PostCategory;
+import com.xenon.data.entity.blog.doctorArticle.DoctorArticleCategory;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,11 @@ public class BlogResponseRequest {
     private String title;
     private String content;
     private PostCategory category;
-    private String doctorCategory;  // For doctor articles
+    private DoctorArticleCategory doctorCategory;  // For doctor articles
     private String media;
     private long commentCount;
     private long likeCount;
     private int viewCount;
-    private boolean isFeatured;
     private List<CommentResponseRequest> commentResponseLists;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;

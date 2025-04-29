@@ -55,27 +55,28 @@ public class AmbulanceBookingServiceImpl extends BaseService implements Ambulanc
     }
 
     @Override
-    public ResponseEntity<?> updateBookingStatus(UpdateBookingStatusRequest body) {
+    public ResponseEntity<?> updateBookingStatus(UpdateBookingStatusRequest body, AmbulanceBookingStatus status) {
         User currentUser = getCurrentUser();
+
+        ambulanceRepository.findByUserId(currentUser.getId()).orElseThrow(() -> new ClientException("Ambulance not found"));
         AmbulanceBooking booking = ambulanceBookingRepository.findById(body.getBookingId())
                 .orElseThrow(() -> new ClientException("Booking not found"));
 
         // Only ambulance owner or admin can update booking status
-        if (!isAmbulanceOwnerOrAdmin(currentUser, booking.getAmbulance())) {
+        if (isAmbulanceOwnerOrAdmin(currentUser, booking.getAmbulance())) {
             throw new UnauthorizedException("You are not authorized to update this booking's status");
         }
 
         try {
-            booking.setStatus(body.getStatus());
+            booking.setStatus(status);
 
             // If booking is completed or cancelled, set ambulance status back to available
-            if (body.getStatus() == AmbulanceBookingStatus.COMPLETED ||
-                    body.getStatus() == AmbulanceBookingStatus.CANCELLED) {
+            if (status == AmbulanceBookingStatus.CANCELLED) {
 
                 Ambulance ambulance = booking.getAmbulance();
                 ambulance.setAmbulanceStatus(AmbulanceStatus.AVAILABLE);
                 ambulanceRepository.save(ambulance);
-            } else if (body.getStatus() == AmbulanceBookingStatus.CONFIRMED) {
+            } else if (status == AmbulanceBookingStatus.CONFIRMED) {
                 // If booking is confirmed, set ambulance status to unavailable
                 Ambulance ambulance = booking.getAmbulance();
                 ambulance.setAmbulanceStatus(AmbulanceStatus.UNAVAILABLE);
@@ -122,7 +123,7 @@ public class AmbulanceBookingServiceImpl extends BaseService implements Ambulanc
                 .orElseThrow(() -> new ClientException("Ambulance not found"));
 
         // Only ambulance owner or admin can view all bookings
-        if (!isAmbulanceOwnerOrAdmin(currentUser, ambulance)) {
+        if (isAmbulanceOwnerOrAdmin(currentUser, ambulance)) {
             throw new UnauthorizedException("You are not authorized to view this ambulance's bookings");
         }
 
@@ -156,7 +157,7 @@ public class AmbulanceBookingServiceImpl extends BaseService implements Ambulanc
                 .orElseThrow(() -> new ClientException("Booking not found"));
 
         // Only booking user, ambulance owner, or admin can view booking details
-        if (!isBookingUserOrAmbulanceOwnerOrAdmin(currentUser, booking)) {
+        if (isBookingUserOrAmbulanceOwnerOrAdmin(currentUser, booking)) {
             throw new UnauthorizedException("You are not authorized to view this booking");
         }
 
@@ -175,11 +176,11 @@ public class AmbulanceBookingServiceImpl extends BaseService implements Ambulanc
                 .orElseThrow(() -> new ClientException("Booking not found"));
 
         // Only booking user, ambulance owner, or admin can cancel booking
-        if (!isBookingUserOrAmbulanceOwnerOrAdmin(currentUser, booking)) {
+        if (isBookingUserOrAmbulanceOwnerOrAdmin(currentUser, booking)) {
             throw new UnauthorizedException("You are not authorized to cancel this booking");
         }
 
-        if (booking.getStatus() == AmbulanceBookingStatus.COMPLETED) {
+        if (booking.getStatus() == AmbulanceBookingStatus.CONFIRMED) {
             throw new ClientException("Cannot cancel a completed booking");
         }
 
@@ -207,13 +208,13 @@ public class AmbulanceBookingServiceImpl extends BaseService implements Ambulanc
     }
 
     private boolean isAmbulanceOwnerOrAdmin(User user, Ambulance ambulance) {
-        return user.getRole() == UserRole.ADMIN ||
-                (user.getRole() == UserRole.AMBULANCE && Objects.equals(user.getId(), ambulance.getUser().getId()));
+        return user.getRole() != UserRole.ADMIN &&
+                (user.getRole() != UserRole.AMBULANCE || !Objects.equals(user.getId(), ambulance.getUser().getId()));
     }
 
     private boolean isBookingUserOrAmbulanceOwnerOrAdmin(User user, AmbulanceBooking booking) {
-        return user.getRole() == UserRole.ADMIN ||
-                Objects.equals(user.getId(), booking.getUser().getId()) ||
-                (user.getRole() == UserRole.AMBULANCE && Objects.equals(user.getId(), booking.getAmbulance().getUser().getId()));
+        return user.getRole() != UserRole.ADMIN &&
+                !Objects.equals(user.getId(), booking.getUser().getId()) &&
+                (user.getRole() != UserRole.AMBULANCE || !Objects.equals(user.getId(), booking.getAmbulance().getUser().getId()));
     }
 }

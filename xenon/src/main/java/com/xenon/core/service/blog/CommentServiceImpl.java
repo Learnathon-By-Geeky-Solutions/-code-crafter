@@ -54,7 +54,7 @@ public class CommentServiceImpl extends BaseService implements CommentService {
         }
     }
 
-    @Override
+   /* @Override
     public ResponseEntity<?> getCommentsByBlogId(Long blogId) {
         Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new ClientException("Blog not found"));
 
@@ -144,7 +144,7 @@ public class CommentServiceImpl extends BaseService implements CommentService {
         );
 
         return success("User comments retrieved successfully", pageResponseRequest);
-    }
+    }*/
 
     @Override
     @Transactional
@@ -196,12 +196,12 @@ public class CommentServiceImpl extends BaseService implements CommentService {
         }
     }
 
-    @Override
+   /* @Override
     public ResponseEntity<?> countCommentsByBlogId(Long blogId) {
         Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new ClientException("Blog not found"));
         long count = commentRepository.countByBlog(blog);
         return success("Comment count retrieved successfully", count);
-    }
+    }*/
 
     private void validateCreateCommentRequest(CreateCommentRequest body) {
         super.validateBody(body);

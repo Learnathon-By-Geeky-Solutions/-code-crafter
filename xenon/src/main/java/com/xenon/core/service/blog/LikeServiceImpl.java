@@ -57,7 +57,7 @@ public class LikeServiceImpl extends BaseService implements LikeService {
         }
     }
 
-    @Override
+   /* @Override
     public ResponseEntity<?> getLikeStatus(Long blogId) {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(() -> new ClientException("Blog not found with id: " + blogId));
@@ -66,9 +66,9 @@ public class LikeServiceImpl extends BaseService implements LikeService {
         long likeCount = likeRepository.countByBlog(blog);
 
         return success("Like status retrieved successfully", new LikeStatus(isLiked, likeCount));
-    }
+    }*/
 
-    @Override
+    /*@Override
     public ResponseEntity<?> getLikesByBlogId(Long blogId) {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(() -> new ClientException("Blog not found with id: " + blogId));
@@ -87,9 +87,9 @@ public class LikeServiceImpl extends BaseService implements LikeService {
         LikeResponseRequest likeResponseRequest = new LikeResponseRequest(userResponseRequests.size(), userResponseRequests);
 
         return success("Likes retrieved successfully", likeResponseRequest);
-    }
+    }*/
 
-    @Override
+    /*@Override
     public ResponseEntity<?> getLikesByBlogIdPaginated(Long blogId, Pageable pageable) {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(() -> new ClientException("Blog not found with id: " + blogId));
@@ -114,9 +114,9 @@ public class LikeServiceImpl extends BaseService implements LikeService {
         );
 
         return success("Likes retrieved successfully", pageResponseRequest);
-    }
+    }*/
 
-    @Override
+   /* @Override
     public ResponseEntity<?> getMostLikedBlogs(Pageable pageable) {
         try {
             List<Object[]> results = likeRepository.findMostLikedBlogs(pageable);
@@ -138,8 +138,8 @@ public class LikeServiceImpl extends BaseService implements LikeService {
             throw new ApiException(e);
         }
     }
-
-    @Override
+*/
+    /*@Override
     public ResponseEntity<?> getMostLikedBlogsByCategory(String category, Pageable pageable) {
         try {
             PostCategory postCategory = PostCategory.valueOf(category.toUpperCase());
@@ -163,7 +163,7 @@ public class LikeServiceImpl extends BaseService implements LikeService {
             log.error(e.getMessage(), e);
             throw new ApiException(e);
         }
-    }
+    }*/
 
     @Override
     public ResponseEntity<?> getUserLikedBlogs(Pageable pageable) {
@@ -185,14 +185,14 @@ public class LikeServiceImpl extends BaseService implements LikeService {
         return success("User liked blogs retrieved successfully", pageResponseRequest);
     }
 
-    @Override
+    /*@Override
     public ResponseEntity<?> countLikesByBlogId(Long blogId) {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(() -> new ClientException("Blog not found with id: " + blogId));
 
         long likeCount = likeRepository.countByBlog(blog);
         return success("Like count retrieved successfully", likeCount);
-    }
+    }*/
 
     // Helper method to convert Blog to BlogResponseRequest
     private BlogResponseRequest convertToBlogResponse(Blog blog) {
@@ -210,7 +210,6 @@ public class LikeServiceImpl extends BaseService implements LikeService {
                 0, // commentCount - not needed here
                 likeRepository.countByBlog(blog),
                 blog.getViewCount() != null ? blog.getViewCount() : 0,
-                blog.getIsFeatured() != null ? blog.getIsFeatured() : false,
                 null, // comments - not needed here
                 blog.getCreatedAt(),
                 blog.getUpdatedAt(),
