@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.consultation.emergency;
 
 import com.xenon.data.entity.consultation.emergency.EmergencyConsultation;
@@ -18,3 +19,4 @@ public class CreateEmergencyConsultationTableRequest {
         return new EmergencyConsultationAppointmentTable(user, emergencyConsultation);
     }
 }
+*/

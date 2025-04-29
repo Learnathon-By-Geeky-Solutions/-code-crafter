@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.common;
 
 import lombok.AllArgsConstructor;
@@ -16,4 +17,4 @@ public class ConsultationTimeRequest {
     private LocalDate consultationDate;
     private LocalTime slotStartTime;
     private LocalTime slotEndTime;
-}
+}*/

@@ -148,8 +148,14 @@ CREATE TABLE blog
     user_id         BIGINT        NOT NULL,
     title           VARCHAR(200)  NOT NULL,
     content         VARCHAR(3000) NOT NULL,
-    category        VARCHAR(50)  CHECK (category IS NULL OR category IN ('MEDICAL_TIPS',  'BLOOD_REQUEST', 'QUESTION', 'NEWS', 'NEED_HELP',  'DOCTOR_ARTICLE'  )),
-    doctor_category VARCHAR(50)  CHECK (doctor_category IS NULL OR doctor_category IN ('MENTAL_HEALTH', 'PHYSICAL_HEALTH','PREVENTIVE_CARE', 'NUTRITION','ALTERNATIVE_MEDICINE', 'MEDICAL_RESEARCH', 'FITNESS')),
+    category        VARCHAR(50) CHECK (category IS NULL OR category IN
+                                                           ('MEDICAL_TIPS', 'BLOOD_REQUEST', 'QUESTION', 'NEWS',
+                                                            'NEED_HELP', 'DOCTOR_ARTICLE')),
+    doctor_category VARCHAR(50) CHECK (doctor_category IS NULL OR doctor_category IN
+                                                                  ('MENTAL_HEALTH', 'PHYSICAL_HEALTH',
+                                                                   'PREVENTIVE_CARE', 'NUTRITION',
+                                                                   'ALTERNATIVE_MEDICINE', 'MEDICAL_RESEARCH',
+                                                                   'FITNESS')),
     media           TEXT,
     view_count      INTEGER     DEFAULT 0,
     created_at      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
@@ -376,4 +382,11 @@ CREATE TABLE emergency_appointment_table
 );
 
 
+CREATE TABLE pharmacy
+(
+    id                   BIGSERIAL PRIMARY KEY,
+    user_id              BIGINT      NOT NULL,
+    trade_license_number VARCHAR(30) NOT NULL UNIQUE,
 
+    FOREIGN KEY (user_id) REFERENCES table_user (id) ON DELETE CASCADE
+);

@@ -14,10 +14,9 @@ public interface ScheduleConflictService {
      * @param startTime The start time
      * @param endTime The end time
      * @return ResponseEntity with conflict status and message
-     */
     ResponseEntity<?> checkSpecialistScheduleConflict(Long doctorId, DAY day, LocalTime startTime, LocalTime endTime);
     
-    /**
+    *
      * Checks if there are any scheduling conflicts for an offline doctor schedule
      * @param doctorId The doctor ID
      * @param hospitalBranchId The hospital branch ID
@@ -25,24 +24,23 @@ public interface ScheduleConflictService {
      * @param startTime The start time
      * @param endTime The end time
      * @return ResponseEntity with conflict status and message
-     */
-    ResponseEntity<?> checkOfflineScheduleConflict(Long doctorId, Long hospitalBranchId, DAY day, LocalTime startTime, LocalTime endTime);
+*/    ResponseEntity<?> checkOfflineScheduleConflict(Long doctorId, Long hospitalBranchId, DAY day, LocalTime startTime, LocalTime endTime);
     
-    /**
+   /* *//**
      * Disables all specialist consultations when emergency consultation is enabled
      * @param doctorId The doctor ID
      * @return ResponseEntity with success/failure message
-     */
+     *//*
     ResponseEntity<?> disableSpecialistConsultationsForEmergency(Long doctorId);
     
-    /**
+    *//**
      * Disables emergency consultation when specialist consultation is enabled
      * @param doctorId The doctor ID
      * @return ResponseEntity with success/failure message
-     */
+     *//*
     ResponseEntity<?> disableEmergencyConsultationForSpecialist(Long doctorId);
     
-    /**
+    *//**
      * Checks if two time ranges overlap
      * @param start1 Start time of first range
      * @param end1 End time of first range

@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.consultation.emergency;
 
 import com.xenon.core.domain.request.common.BeneficiaryRequest;
@@ -41,4 +42,4 @@ public class EmergencyConsultationAppointmentRequest extends BeneficiaryRequest 
 
         return appointment;
     }
-}
+}*/

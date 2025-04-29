@@ -16,7 +16,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
     boolean existsByPassport(String passport);
 
-    List<Doctor> findBySpecialistCategory(SpecialistCategory specialistCategory);
 
     Optional<Doctor> findByUserId(Long userId);
 }

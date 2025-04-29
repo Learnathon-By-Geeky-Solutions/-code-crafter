@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.consultation.specialist;
 
 import com.xenon.core.domain.request.common.BeneficiaryRequest;
@@ -50,4 +51,4 @@ public class SpecialistConsultationAppointmentRequest extends BeneficiaryRequest
 
         return appointment;
     }
-}
+}*/

@@ -1,3 +1,4 @@
+/*
 package com.xenon.presenter.api.consultaion;
 
 import com.xenon.common.annotation.PreAuthorize;
@@ -228,4 +229,4 @@ public class ConsultationController {
             @Parameter(description = "Appointment ID") @PathVariable Long appointmentId) {
         return specialistConsultationService.confirmSpecialistConsultation(appointmentId);
     }
-}
+}*/

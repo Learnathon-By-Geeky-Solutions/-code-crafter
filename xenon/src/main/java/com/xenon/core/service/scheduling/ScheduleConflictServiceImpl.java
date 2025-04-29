@@ -3,16 +3,12 @@ package com.xenon.core.service.scheduling;
 import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.service.common.BaseService;
-import com.xenon.data.entity.consultation.emergency.EmergencyConsultation;
-import com.xenon.data.entity.consultation.specialist.SpecialistConsultation;
 import com.xenon.data.entity.doctor.Doctor;
 import com.xenon.data.entity.hospital.AVAILABILITY;
 import com.xenon.data.entity.hospital.DAY;
 import com.xenon.data.entity.hospital.DoctorSchedule;
 import com.xenon.data.repository.DoctorRepository;
 import com.xenon.data.repository.DoctorScheduleRepository;
-import com.xenon.data.repository.EmergencyConsultationRepository;
-import com.xenon.data.repository.SpecialistConsultationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,10 +26,8 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
 
     private final DoctorRepository doctorRepository;
     private final DoctorScheduleRepository doctorScheduleRepository;
-    private final SpecialistConsultationRepository specialistConsultationRepository;
-    private final EmergencyConsultationRepository emergencyConsultationRepository;
 
-    @Override
+   /* @Override
     public ResponseEntity<?> checkSpecialistScheduleConflict(Long doctorId, DAY day, LocalTime startTime, LocalTime endTime) {
         try {
             // First verify the doctor exists
@@ -54,7 +48,7 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
             log.error("Error checking specialist schedule conflict: {}", e.getMessage(), e);
             throw new ApiException(e);
         }
-    }
+    }*/
 
     @Override
     public ResponseEntity<?> checkOfflineScheduleConflict(Long doctorId, Long hospitalBranchId, DAY day, LocalTime startTime, LocalTime endTime) {
@@ -66,11 +60,11 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
             // Check offline schedule conflicts
             checkOfflineScheduleConflicts(doctorId, day, startTime, endTime);
 
-            // Check specialist schedule conflicts
+            /*// Check specialist schedule conflicts
             checkSpecialistScheduleConflicts(doctorId, day, startTime, endTime);
 
             // Check emergency consultation availability
-            checkEmergencyConsultationAvailability(doctor);
+            checkEmergencyConsultationAvailability(doctor);*/
 
             return success("No schedule conflicts found", null);
         } catch (Exception e) {
@@ -79,7 +73,7 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
         }
     }
 
-    @Override
+   /* @Override
     @Transactional
     public ResponseEntity<?> disableSpecialistConsultationsForEmergency(Long doctorId) {
         try {
@@ -123,7 +117,7 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
             log.error("Error disabling emergency consultation: {}", e.getMessage(), e);
             throw new ApiException(e);
         }
-    }
+    }*/
 
     @Override
     public boolean doTimesOverlap(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
@@ -149,7 +143,6 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
 
     /**
      * Checks for conflicts with specialist schedules
-     */
     private void checkSpecialistScheduleConflicts(Long doctorId, DAY day, LocalTime startTime, LocalTime endTime) {
         List<SpecialistConsultation> consultations = specialistConsultationRepository.findByDoctorIdAndDay(doctorId, day);
 
@@ -159,15 +152,15 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
             }
         }
     }
-
+*/
     /**
      * Checks if emergency consultation is active
      */
-    private void checkEmergencyConsultationAvailability(Doctor doctor) {
+    /*private void checkEmergencyConsultationAvailability(Doctor doctor) {
         Optional<EmergencyConsultation> emergencyConsultation = emergencyConsultationRepository.findByDoctor(doctor);
 
         if (emergencyConsultation.isPresent() && emergencyConsultation.get().getAvailability() == AVAILABILITY.AVAILABLE) {
             throw new ClientException("Schedule Conflict: Doctor has an active emergency consultation");
         }
-    }
+    }*/
 }

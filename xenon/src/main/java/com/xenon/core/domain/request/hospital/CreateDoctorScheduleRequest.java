@@ -19,9 +19,7 @@ public class CreateDoctorScheduleRequest {
     private Long doctorId;
     private Long hospitalBranchId;
     private DAY day;
-    @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime ;
-    @JsonFormat(pattern = "HH:mm")
     private LocalTime  endTime ;
     private AVAILABILITY availability;
     private Integer booking_quantity;

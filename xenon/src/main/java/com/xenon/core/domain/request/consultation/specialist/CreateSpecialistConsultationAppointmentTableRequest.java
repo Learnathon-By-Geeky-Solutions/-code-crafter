@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.consultation.specialist;
 
 import com.xenon.data.entity.consultation.specialist.SpecialistConsultation;
@@ -21,3 +22,4 @@ public class CreateSpecialistConsultationAppointmentTableRequest {
         return new SpecialistConsultationAppointmentTable(specialistConsultation, user, status);
     }
 }
+*/

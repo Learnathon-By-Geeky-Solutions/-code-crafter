@@ -1,6 +1,5 @@
 package com.xenon.core.service.user;
 
-import com.xenon.core.domain.request.hospital.CreateAppointmentTableRequest;
 import com.xenon.core.domain.request.user.CreateAccountRequest;
 import com.xenon.core.domain.request.user.UpdateAccountRequest;
 import com.xenon.core.domain.request.user.UpdateUserLatitudeLongitude;

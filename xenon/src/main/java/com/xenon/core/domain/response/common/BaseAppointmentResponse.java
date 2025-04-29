@@ -1,3 +1,4 @@
+/*
 // Base response for all appointments
 package com.xenon.core.domain.response.common;
 
@@ -29,4 +30,4 @@ public class BaseAppointmentResponse {
     private String medicalHistoryFile;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-}
+}*/

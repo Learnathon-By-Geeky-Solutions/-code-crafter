@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.service.consultation.specialist;
 
 import com.xenon.core.domain.exception.ApiException;
@@ -599,4 +600,4 @@ public class SpecialistConsultationServiceImpl extends BaseService implements Sp
         // For now, just generate a random UUID-based link
         return "https://meet.google.com/" + UUID.randomUUID().toString().substring(0, 8);
     }
-}
+}*/

@@ -1,3 +1,4 @@
+/*
 package com.xenon.data.repository;
 
 import com.xenon.data.entity.consultation.emergency.EmergencyConsultation;
@@ -18,4 +19,4 @@ public interface EmergencyConsultationTableRepository extends JpaRepository<Emer
     List<EmergencyConsultationAppointmentTable> findByEmergencyConsultationAndAppointmentStatus(
             EmergencyConsultation emergencyConsultation, AppointmentStatus status);
 
-}
+}*/

@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.response.consultation.specialistConsultation;
 
 import com.xenon.core.domain.response.common.BaseAppointmentResponse;
@@ -21,4 +22,4 @@ public class SpecialistConsultationAppointmentResponse extends BaseAppointmentRe
     private LocalTime consultationSlotStart;
     private LocalTime consultationSlotEnd;
     private String meetingLink;
-}
+}*/

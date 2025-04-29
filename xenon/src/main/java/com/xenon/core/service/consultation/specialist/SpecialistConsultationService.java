@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.service.consultation.specialist;
 
 import com.xenon.core.domain.request.consultation.specialist.CreateSpecialistConsultationRequest;
@@ -29,10 +30,12 @@ public interface SpecialistConsultationService {
 
     ResponseEntity<?> toggleConsultationAvailability(Long consultationId);
 
-    /**
+    */
+/**
      * Confirms a pending specialist consultation appointment
      * @param appointmentId The appointment ID
      * @return ResponseEntity with success/failure message
-     */
+     *//*
+
     ResponseEntity<?> confirmSpecialistConsultation(Long appointmentId);
-}
+}*/

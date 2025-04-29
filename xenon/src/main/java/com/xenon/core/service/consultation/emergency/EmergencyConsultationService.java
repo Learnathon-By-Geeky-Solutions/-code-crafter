@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.service.consultation.emergency;
 
 import com.xenon.core.domain.request.consultation.emergency.CreateEmergencyConsultationRequest;
@@ -25,10 +26,12 @@ public interface EmergencyConsultationService {
 
     ResponseEntity<?> completeEmergencyConsultation(Long appointmentId);
 
-    /**
+    */
+/**
      * Confirms a pending emergency consultation appointment
      * @param appointmentId The appointment ID
      * @return ResponseEntity with success/failure message
-     */
+     *//*
+
     ResponseEntity<?> confirmEmergencyConsultation(Long appointmentId);
-}
+}*/

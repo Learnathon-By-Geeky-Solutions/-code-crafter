@@ -1,3 +1,4 @@
+/*
 package com.xenon.data.repository;
 
 import com.xenon.data.entity.consultation.emergency.EmergencyConsultation;
@@ -20,4 +21,4 @@ public interface EmergencyConsultationRepository extends JpaRepository<Emergency
     Optional<EmergencyConsultation> findByDoctor(Doctor doctor);
 
     boolean existsByDoctor(Doctor doctor);
-}
+}*/

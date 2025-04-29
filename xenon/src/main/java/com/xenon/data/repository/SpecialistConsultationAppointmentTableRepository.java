@@ -1,3 +1,4 @@
+/*
 package com.xenon.data.repository;
 
 import com.xenon.data.entity.consultation.specialist.SpecialistConsultation;
@@ -25,4 +26,4 @@ public interface SpecialistConsultationAppointmentTableRepository extends JpaRep
             LocalTime slotStartTime,
             LocalTime slotEndTime,
             AppointmentStatus notStatus);
-}
+}*/

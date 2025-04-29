@@ -12,10 +12,8 @@ import lombok.NoArgsConstructor;
 public class CreatePharmacyAccountRequest {
 
     private String tradeLicenseNumber;
-    private String drugLicenseNumber;
-    private String ownerNID;
 
     public Pharmacy toEntity(User user) {
-        return new Pharmacy(tradeLicenseNumber, drugLicenseNumber, ownerNID, user);
+        return new Pharmacy(tradeLicenseNumber, user);
     }
 }

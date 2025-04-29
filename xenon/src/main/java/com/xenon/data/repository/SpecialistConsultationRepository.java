@@ -1,3 +1,4 @@
+/*
 package com.xenon.data.repository;
 
 import com.xenon.data.entity.consultation.STATUS;
@@ -19,4 +20,4 @@ public interface SpecialistConsultationRepository extends JpaRepository<Speciali
     List<SpecialistConsultation> findByDoctorAndDayAndStatus(Doctor doctor, DAY dayDate, STATUS status);
 
     List<SpecialistConsultation> findByDoctorIdAndDay(Long doctorId, DAY dayDate);
-}
+}*/

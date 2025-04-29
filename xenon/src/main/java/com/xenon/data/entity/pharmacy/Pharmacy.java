@@ -24,16 +24,8 @@ public class Pharmacy {
     @Column(length = 30, nullable = false, unique = true)
     private String tradeLicenseNumber;
 
-    @Column(length = 30, nullable = false, unique = true)
-    private String drugLicenseNumber;
-
-    @Column(length = 30, name = "owner_nid", unique = true)
-    private String ownerNID;
-
-    public Pharmacy(String tradeLicenseNumber, String drugLicenseNumber, String ownerNID, User user) {
+    public Pharmacy(String tradeLicenseNumber, User user) {
         this.tradeLicenseNumber = tradeLicenseNumber;
-        this.drugLicenseNumber = drugLicenseNumber;
-        this.ownerNID = ownerNID;
         this.user = user;
     }
 }

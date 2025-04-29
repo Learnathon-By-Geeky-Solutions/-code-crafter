@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.consultation.emergency;
 
 import com.xenon.data.entity.consultation.emergency.EmergencyConsultation;
@@ -20,3 +21,4 @@ public class CreateEmergencyConsultationRequest {
         return new EmergencyConsultation(doctor, availability, fee);
     }
 }
+*/

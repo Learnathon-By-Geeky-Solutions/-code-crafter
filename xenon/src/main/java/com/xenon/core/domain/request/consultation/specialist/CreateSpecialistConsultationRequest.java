@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.consultation.specialist;
 
 import com.xenon.data.entity.consultation.STATUS;
@@ -31,3 +32,4 @@ public class CreateSpecialistConsultationRequest {
 
     }
 }
+*/

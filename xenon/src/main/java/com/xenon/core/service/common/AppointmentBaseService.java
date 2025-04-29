@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.service.common;
 
 import com.xenon.core.domain.exception.ClientException;
@@ -12,7 +13,8 @@ import java.util.UUID;
 @Slf4j
 public abstract class AppointmentBaseService extends BaseService {
     
-    /**
+    */
+/**
      * Validates beneficiary information
      * @param isBeneficiary Whether this is for a beneficiary
      * @param name Beneficiary name
@@ -20,7 +22,8 @@ public abstract class AppointmentBaseService extends BaseService {
      * @param address Beneficiary address
      * @param gender Beneficiary gender
      * @param age Beneficiary age
-     */
+     *//*
+
     protected void validateBeneficiaryInfo(Boolean isBeneficiary, String name, String phone, 
                                           String address, Gender gender, Integer age) {
         if (isBeneficiary == null) {
@@ -50,11 +53,13 @@ public abstract class AppointmentBaseService extends BaseService {
         }
     }
     
-    /**
+    */
+/**
      * Validates appointment date and time
      * @param date Appointment date
      * @param time Appointment time (if applicable)
-     */
+     *//*
+
     protected void validateAppointmentDateTime(LocalDate date, LocalTime time) {
         if (date == null) {
             throw new ClientException("Appointment date is required");
@@ -71,43 +76,51 @@ public abstract class AppointmentBaseService extends BaseService {
         }
     }
     
-    /**
+    */
+/**
      * Generates a meeting link for online consultations
      * @return A Google Meet-like link
-     */
+     *//*
+
     protected String generateMeetingLink() {
         // In a real application, this would integrate with Google Meet API
         // For now, just generate a random UUID-based link
         return "https://meet.google.com/" + UUID.randomUUID().toString().substring(0, 8);
     }
     
-    /**
+    */
+/**
      * Checks if an appointment can be cancelled
      * @param currentStatus Current appointment status
-     */
+     *//*
+
     protected void validateCancellation(AppointmentStatus currentStatus) {
         if (currentStatus == AppointmentStatus.CANCELLED) {
             throw new ClientException("Appointment is already cancelled");
         }
     }
     
-    /**
+    */
+/**
      * Checks if an appointment can be completed
      * @param currentStatus Current appointment status
-     */
+     *//*
+
     protected void validateCompletion(AppointmentStatus currentStatus) {
         if (currentStatus == AppointmentStatus.CANCELLED) {
             throw new ClientException("Cannot complete a cancelled appointment");
         }
     }
     
-    /**
+    */
+/**
      * Checks if an appointment can be confirmed
      * @param currentStatus Current appointment status
-     */
+     *//*
+
     protected void validateConfirmation(AppointmentStatus currentStatus) {
         if (currentStatus != AppointmentStatus.PENDING) {
             throw new ClientException("Can only confirm appointments in pending status");
         }
     }
-}
+}*/

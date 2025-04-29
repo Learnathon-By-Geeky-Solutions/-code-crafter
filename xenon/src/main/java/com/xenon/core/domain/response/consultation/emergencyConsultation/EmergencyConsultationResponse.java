@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.response.consultation.emergencyConsultation;
 
 import com.xenon.data.entity.hospital.AVAILABILITY;
@@ -15,4 +16,4 @@ public class EmergencyConsultationResponse {
     private String specialistCategory;
     private AVAILABILITY availability;
     private Integer fee;
-}
+}*/

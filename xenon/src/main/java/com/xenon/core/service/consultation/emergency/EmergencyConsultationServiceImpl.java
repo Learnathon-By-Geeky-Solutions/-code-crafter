@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.service.consultation.emergency;
 
 import com.xenon.core.domain.exception.ApiException;
@@ -458,4 +459,4 @@ public class EmergencyConsultationServiceImpl extends BaseService implements Eme
                 consultation.getFee()
         );
     }
-}
+}*/

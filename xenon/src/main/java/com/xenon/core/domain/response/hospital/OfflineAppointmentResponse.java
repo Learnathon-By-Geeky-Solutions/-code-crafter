@@ -1,6 +1,5 @@
 package com.xenon.core.domain.response.hospital;
 
-import com.xenon.core.domain.response.common.BaseAppointmentResponse;
 import com.xenon.core.domain.response.common.DoctorBasicInfoResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +13,7 @@ import java.time.LocalTime;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OfflineAppointmentResponse extends BaseAppointmentResponse {
+public class OfflineAppointmentResponse  {
     private Long doctorScheduleId;
     private DoctorBasicInfoResponse doctor;
     private String hospitalName;

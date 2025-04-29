@@ -15,7 +15,7 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
     List<DoctorSchedule> findByOfflineDoctorAffiliation_HospitalBranchIdAndOfflineDoctorAffiliation_DoctorId(
             Long hospitalBranchId, Long doctorId);
 
-    List<DoctorSchedule> findByOfflineDoctorAffiliation_HospitalBranchId(Long hospitalBranchId);
+    /*List<DoctorSchedule> findByOfflineDoctorAffiliation_HospitalBranchId(Long hospitalBranchId);
 
-    List<DoctorSchedule> findByOfflineDoctorAffiliation_DoctorId(Long doctorId);
+    List<DoctorSchedule> findByOfflineDoctorAffiliation_DoctorId(Long doctorId);*/
 }

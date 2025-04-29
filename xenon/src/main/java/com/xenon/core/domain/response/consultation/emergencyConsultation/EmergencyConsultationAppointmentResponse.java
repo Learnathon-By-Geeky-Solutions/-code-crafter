@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.response.consultation.emergencyConsultation;
 
 import com.xenon.core.domain.response.common.BaseAppointmentResponse;
@@ -18,4 +19,4 @@ public class EmergencyConsultationAppointmentResponse extends BaseAppointmentRes
     private DoctorBasicInfoResponse doctor;
     private LocalDateTime consultationDate;
     private String meetingLink;
-}
+}*/
