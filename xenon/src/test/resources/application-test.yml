@@ -2,13 +2,6 @@ spring:
   application:
     name: xenon-test
 
-  # Use H2 in-memory database for testing
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
-    username: sa
-    password:
-
   jpa:
     hibernate:
       ddl-auto: create-drop
