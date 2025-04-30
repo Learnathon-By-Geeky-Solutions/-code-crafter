@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.common;
 
 import com.xenon.data.entity.user.Gender;
@@ -18,4 +19,4 @@ public class BeneficiaryRequest {
     private Gender beneficiaryGender;
     private Integer beneficiaryAge;
     private String medicalHistoryFile;
-}
+}*/

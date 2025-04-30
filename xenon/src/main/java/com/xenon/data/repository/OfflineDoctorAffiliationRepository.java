@@ -11,12 +11,12 @@ import java.util.List;
 @Repository
 public interface OfflineDoctorAffiliationRepository extends JpaRepository<OfflineDoctorAffiliation, DoctorAffiliationId> {
 
-    List<OfflineDoctorAffiliation> findByHospitalBranchId(Long hospitalBranchId);
+    /*List<OfflineDoctorAffiliation> findByHospitalBranchId(Long hospitalBranchId);
 
     List<OfflineDoctorAffiliation> findByDoctorId(Long doctorId);
 
     List<OfflineDoctorAffiliation> findByHospitalBranchIdAndDoctor_SpecialistCategory(
             Long hospitalBranchId, SpecialistCategory specialistCategory);
 
-    boolean existsByDoctorIdAndHospitalBranchId(Long doctorId, Long hospitalBranchId);
+    boolean existsByDoctorIdAndHospitalBranchId(Long doctorId, Long hospitalBranchId);*/
 }

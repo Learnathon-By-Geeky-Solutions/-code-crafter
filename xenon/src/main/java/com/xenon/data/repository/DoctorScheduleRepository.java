@@ -10,12 +10,12 @@ import java.util.List;
 @Repository
 public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, Long> {
 
-    List<DoctorSchedule> findByOfflineDoctorAffiliation_DoctorIdAndDay(Long doctorId, DAY day);
+    /*List<DoctorSchedule> findByOfflineDoctorAffiliation_DoctorIdAndDay(Long doctorId, DAY day);
 
     List<DoctorSchedule> findByOfflineDoctorAffiliation_HospitalBranchIdAndOfflineDoctorAffiliation_DoctorId(
             Long hospitalBranchId, Long doctorId);
 
-    /*List<DoctorSchedule> findByOfflineDoctorAffiliation_HospitalBranchId(Long hospitalBranchId);
+    *//*List<DoctorSchedule> findByOfflineDoctorAffiliation_HospitalBranchId(Long hospitalBranchId);
 
     List<DoctorSchedule> findByOfflineDoctorAffiliation_DoctorId(Long doctorId);*/
 }

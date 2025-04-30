@@ -1,6 +1,7 @@
 package com.xenon.presenter.api.ambulance;
 
 import com.xenon.common.annotation.PreAuthorize;
+import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.request.ambulance.AmbulanceBookingRequest;
 import com.xenon.core.domain.request.ambulance.UpdateBookingStatusRequest;
 import com.xenon.core.service.ambulance.AmbulanceBookingService;
@@ -37,6 +38,8 @@ public class AmbulanceBookingController {
     public ResponseEntity<?> updateBookingStatus(@Nullable
                                                  @RequestParam AmbulanceBookingStatus status,
                                                  @RequestBody UpdateBookingStatusRequest body) {
+
+        if (status == null) throw new ClientException("Status cannot be null");
         return ambulanceBookingService.updateBookingStatus(body, status);
     }
 

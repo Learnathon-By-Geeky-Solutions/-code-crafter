@@ -13,16 +13,16 @@ import java.util.List;
 @Repository
 public interface OfflineAppointmentTableRepository extends JpaRepository<OfflineAppointmentTable, Long> {
 
-    List<OfflineAppointmentTable> findByUserIdOrderByAppointmentDateDescAppointmentTimeDesc(Long userId);
+   /* List<OfflineAppointmentTable> findByUserIdOrderByAppointmentDateDescAppointmentTimeDesc(Long userId);
 
     List<OfflineAppointmentTable> findByDoctorSchedule_OfflineDoctorAffiliation_HospitalBranchIdOrderByAppointmentDateDescAppointmentTimeDesc(Long hospitalBranchId);
 
     List<OfflineAppointmentTable> findByDoctorSchedule_OfflineDoctorAffiliation_DoctorIdOrderByAppointmentDateDescAppointmentTimeDesc(Long doctorId);
 
     int countByDoctorScheduleAndAppointmentDateAndAppointmentTimeBetweenAndAppointmentStatusNot(
-            DoctorSchedule doctorSchedule,
+            DoctorSchedule,
             LocalDate appointmentDate,
             LocalTime startTime,
             LocalTime endTime,
-            AppointmentStatus notStatus);
+            AppointmentStatus notStatus);*/
 }

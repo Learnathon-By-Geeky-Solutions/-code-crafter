@@ -15,8 +15,6 @@ public interface UserLocationRepository extends JpaRepository<UserLocation, Long
     
     Optional<UserLocation> findByUser_Id(Long userId);
     
-    List<UserLocation> findByLocationAllowedTrue();
-    
     // Find users whose location was updated in the last X minutes
     @Query("SELECT ul FROM UserLocation ul WHERE ul.locationAllowed = true AND ul.lastUpdated >= :timeThreshold")
     List<UserLocation> findActiveUserLocations(@Param("timeThreshold") ZonedDateTime timeThreshold);
@@ -33,6 +31,4 @@ public interface UserLocationRepository extends JpaRepository<UserLocation, Long
             @Param("latitude") double latitude, 
             @Param("longitude") double longitude, 
             @Param("radius") double radius);
-    
-    boolean existsByUser_Id(Long userId);
 }

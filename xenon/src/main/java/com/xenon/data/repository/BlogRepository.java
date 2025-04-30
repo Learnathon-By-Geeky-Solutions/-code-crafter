@@ -19,9 +19,6 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
     // Search functionality
     Page<Blog> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String titleQuery, String contentQuery, Pageable pageable);
 
-    // Doctor article specific queries
-    Page<Blog> findByCategoryAndDoctorCategory(PostCategory category, String doctorCategory, Pageable pageable);
-
     // Trending blogs by recent comments
     @Query("SELECT b FROM Blog b LEFT JOIN Comment c ON b.id = c.blog.id " +
             "WHERE c.createdAt > :since GROUP BY b.id ORDER BY COUNT(c.id) DESC")

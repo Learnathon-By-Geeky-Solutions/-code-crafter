@@ -31,15 +31,6 @@ public interface AmbulanceRepository extends JpaRepository<Ambulance, Long> {
     )
     AmbulanceMetadataProjection getAmbulanceMetadata(@Param("type") String ambulanceType);
 
-    List<Ambulance> findAllByAmbulanceType(AmbulanceType ambulanceType);
-
-    Page<Ambulance> findAllByAmbulanceType(AmbulanceType ambulanceType, Pageable pageable);
-
-    List<Ambulance> findAllByAmbulanceStatus(AmbulanceStatus status);
-
-    Page<Ambulance> findAllByAmbulanceStatus(AmbulanceStatus status, Pageable pageable);
-
-    List<Ambulance> findAllByAmbulanceTypeAndAmbulanceStatus(AmbulanceType type, AmbulanceStatus status);
 
     Page<Ambulance> findAllByAmbulanceTypeAndAmbulanceStatus(AmbulanceType type, AmbulanceStatus status, Pageable pageable);
 
@@ -50,14 +41,6 @@ public interface AmbulanceRepository extends JpaRepository<Ambulance, Long> {
             @Param("area") String area,
             Pageable pageable);
 
-    @Query("SELECT AVG(ar.rating) FROM AmbulanceReview ar WHERE ar.ambulance.id = :ambulanceId")
-    Double getAverageRatingByAmbulanceId(@Param("ambulanceId") Long ambulanceId);
-
-    @Query("SELECT COUNT(ar) FROM AmbulanceReview ar WHERE ar.ambulance.id = :ambulanceId")
-    Integer getReviewCountByAmbulanceId(@Param("ambulanceId") Long ambulanceId);
-
     Optional<Ambulance> findByUserId(Long id);
 
-
-//    <T> ScopedValue<T> findByUserId(Long id);
 }

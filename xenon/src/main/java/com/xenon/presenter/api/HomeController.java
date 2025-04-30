@@ -9,7 +9,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1")
-public class HomeResource {
+public class HomeController {
 
     @GetMapping("status")
     public ResponseEntity<?> home(){
