@@ -1,13 +1,22 @@
 package com.xenon.core.service.doctor;
 
 import com.xenon.core.domain.exception.ApiException;
+import com.xenon.core.domain.exception.ClientException;
 import com.xenon.core.domain.request.doctor.DoctorProfileRequest;
+import com.xenon.core.domain.response.doctor.DoctorProfileResponse;
 import com.xenon.core.service.common.BaseService;
+import com.xenon.data.entity.doctor.Doctor;
+import com.xenon.data.entity.user.User;
 import com.xenon.data.repository.DoctorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -31,8 +40,68 @@ public class DoctorServiceImpl extends BaseService implements DoctorService {
     }
 
     @Override
+    public ResponseEntity<?> getDoctorProfile() {
+
+        Doctor doctor = doctorRepository.findByUserId(getCurrentUser().getId()).orElseThrow(() -> new ClientException("Doctor profile not found"));
+
+        try {
+            return success("Doctor profile retrieved successfully", getDoctorProfile(doctor.getId()));
+        } catch (Exception e) {
+            log.error("Error retrieving doctor profile: {}", e.getMessage(), e);
+            throw new ApiException(e);
+        }
+    }
+
+
+    @Override
     public ResponseEntity<?> getDoctorProfile(Long doctorId) {
-        return null;
+        // Find the doctor entity
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new ClientException("Doctor not found with id: " + doctorId));
+
+        // Find the user associated with this doctor
+        User user = doctor.getUser();
+        if (user == null) {
+            throw new ClientException("User not found for doctor with id: " + doctorId);
+        }
+
+
+        // Create response object
+        DoctorProfileResponse response = new DoctorProfileResponse();
+        response.setId(doctorId);
+        response.setName(user.getFirstName() + " " + user.getLastName());
+        response.setSpecialist(doctor.getSpecialistCategory());
+        response.setDoctorTitle(doctor.getDoctorTitle());
+        response.setAbout(doctor.getAbout());
+
+        // Parse list fields (assuming they're stored as comma-separated strings)
+        response.setAreasOfExpertise(parseStringToList(doctor.getAreaOfExpertise()));
+        response.setPatientCarePhilosophy(parseStringToList(doctor.getPatientCarePolicy()));
+        response.setEducation(parseStringToList(doctor.getEducation()));
+        response.setExperience(String.valueOf(doctor.getExperience()));
+        response.setAwards(parseStringToList(doctor.getAwards()));
+        response.setPublications(parseStringToList(doctor.getPublications()));
+
+        // Set contact information
+        response.setUpazila(user.getUpazila());
+        response.setAddress(user.getArea());
+        response.setPhone(user.getPhone());
+        response.setEmail(user.getEmail());
+
+        return success("Doctor profile retrieved successfully", response);
+    }
+
+    /**
+     * Helper method to parse comma-separated strings into lists
+     */
+    private List<String> parseStringToList(String commaSeparatedString) {
+        if (commaSeparatedString == null || commaSeparatedString.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return Arrays.stream(commaSeparatedString.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
     }
 
     @Override

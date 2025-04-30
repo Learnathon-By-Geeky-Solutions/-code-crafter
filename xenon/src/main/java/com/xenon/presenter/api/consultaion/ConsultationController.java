@@ -31,7 +31,7 @@ import java.time.LocalDate;
 public class ConsultationController {
 
     private final EmergencyConsultationService emergencyConsultationService;
-    private final SpecialistConsultationService specialistConsultationService;
+//    private final SpecialistConsultationService specialistConsultationService;
 
     // ----------------- EMERGENCY CONSULTATION APIs -----------------
 
@@ -40,7 +40,7 @@ public class ConsultationController {
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Create emergency consultation service", description = "Doctors can create emergency consultation service")
     public ResponseEntity<?> createEmergencyConsultation(
-            @Parameter(description = "Emergency consultation details") 
+            @Parameter(description = "Emergency consultation details")
             @Nullable @RequestBody CreateEmergencyConsultationRequest request) {
         return emergencyConsultationService.createEmergencyConsultation(request);
     }
@@ -50,7 +50,7 @@ public class ConsultationController {
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Book emergency consultation", description = "Users can book an emergency consultation with available doctors")
     public ResponseEntity<?> bookEmergencyConsultation(
-            @Parameter(description = "Emergency consultation booking details") 
+            @Parameter(description = "Emergency consultation booking details")
             @Nullable @RequestBody EmergencyConsultationAppointmentRequest request) {
         return emergencyConsultationService.bookEmergencyConsultation(request);
     }
@@ -126,7 +126,9 @@ public class ConsultationController {
         return emergencyConsultationService.confirmEmergencyConsultation(appointmentId);
     }
 
-    // ----------------- SPECIALIST CONSULTATION APIs -----------------
+    */
+/*//*
+/ ----------------- SPECIALIST CONSULTATION APIs -----------------
 
     @PostMapping("/specialist/create")
     @PreAuthorize(authorities = {UserRole.DOCTOR, UserRole.ADMIN}, shouldCheckAccountStatus = true)
@@ -228,5 +230,7 @@ public class ConsultationController {
     public ResponseEntity<?> confirmSpecialistConsultation(
             @Parameter(description = "Appointment ID") @PathVariable Long appointmentId) {
         return specialistConsultationService.confirmSpecialistConsultation(appointmentId);
-    }
-}*/
+    }*//*
+
+}
+*/

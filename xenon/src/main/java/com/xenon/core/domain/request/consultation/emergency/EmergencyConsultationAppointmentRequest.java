@@ -42,4 +42,5 @@ public class EmergencyConsultationAppointmentRequest extends BeneficiaryRequest 
 
         return appointment;
     }
-}*/
+}
+*/

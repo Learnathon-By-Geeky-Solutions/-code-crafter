@@ -8,6 +8,7 @@ public interface DoctorService {
 
     @Transactional
     ResponseEntity<?> createDoctorProfileRequest(DoctorProfileRequest body);
+    ResponseEntity<?> getDoctorProfile();
     ResponseEntity<?> getDoctorProfile(Long doctorId);
     @Transactional
     ResponseEntity<?> updateDoctorProfile(Long doctorId, DoctorProfileRequest body);

@@ -33,6 +33,14 @@ public class DoctorController {
         return doctorService.createDoctorProfileRequest(request);
     }
 
+    @GetMapping
+    @PreAuthorize(authorities = {UserRole.DOCTOR, UserRole.ADMIN}, shouldCheckAccountStatus = true)
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Get doctor profile", description = "View a doctor's complete profile")
+    public ResponseEntity<?> getDoctorProfile() {
+        return doctorService.getDoctorProfile();
+    }
+
     @GetMapping("/{doctorId}")
     @PreAuthorize(shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
