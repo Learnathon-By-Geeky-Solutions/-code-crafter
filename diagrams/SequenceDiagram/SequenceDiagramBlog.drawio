@@ -1,0 +1,64 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="26.0.5">
+  <diagram id="ydW3iTOIEBJDnUvKhC3X" name="Page-1">
+    <mxGraphModel dx="1434" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="SXxbHGS_TOv4Ob3SwH2M-1" value="Doctor" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=#d5e8d4;gradientColor=#97d077;strokeColor=#82b366;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="110" width="150" height="450" as="geometry" />
+        </mxCell>
+        <mxCell id="SXxbHGS_TOv4Ob3SwH2M-11" value="" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};strokeWidth=2;fillColor=#dae8fc;gradientColor=#7ea6e0;strokeColor=#6c8ebf;" vertex="1" parent="SXxbHGS_TOv4Ob3SwH2M-1">
+          <mxGeometry x="70" y="100" width="10" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="SXxbHGS_TOv4Ob3SwH2M-2" value="Blog System" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=#d5e8d4;gradientColor=#97d077;strokeColor=#82b366;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="307" y="110" width="150" height="450" as="geometry" />
+        </mxCell>
+        <mxCell id="SXxbHGS_TOv4Ob3SwH2M-9" value="" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};strokeWidth=2;fillColor=#dae8fc;gradientColor=#7ea6e0;strokeColor=#6c8ebf;" vertex="1" parent="SXxbHGS_TOv4Ob3SwH2M-2">
+          <mxGeometry x="70" y="190" width="10" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="SXxbHGS_TOv4Ob3SwH2M-10" value="" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};strokeWidth=2;fillColor=#dae8fc;gradientColor=#7ea6e0;strokeColor=#6c8ebf;" vertex="1" parent="SXxbHGS_TOv4Ob3SwH2M-2">
+          <mxGeometry x="70" y="280" width="10" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="SXxbHGS_TOv4Ob3SwH2M-3" value="User" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=#d5e8d4;gradientColor=#97d077;strokeColor=#82b366;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="527" y="110" width="150" height="450" as="geometry" />
+        </mxCell>
+        <mxCell id="SXxbHGS_TOv4Ob3SwH2M-4" value="Submit Blog Post" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeWidth=2;" edge="1" parent="1" source="SXxbHGS_TOv4Ob3SwH2M-1" target="SXxbHGS_TOv4Ob3SwH2M-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="247" y="217" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SXxbHGS_TOv4Ob3SwH2M-5" value="Acknowledge Blog Submission" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeWidth=2;" edge="1" parent="1" source="SXxbHGS_TOv4Ob3SwH2M-2" target="SXxbHGS_TOv4Ob3SwH2M-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="269" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SXxbHGS_TOv4Ob3SwH2M-6" value="Save Blog Post to Database" style="curved=1;endArrow=block;rounded=0;strokeWidth=2;" edge="1" parent="1" source="SXxbHGS_TOv4Ob3SwH2M-2" target="SXxbHGS_TOv4Ob3SwH2M-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="433" y="321" />
+              <mxPoint x="433" y="351" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SXxbHGS_TOv4Ob3SwH2M-7" value="Request to View Blog" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeWidth=2;" edge="1" parent="1" source="SXxbHGS_TOv4Ob3SwH2M-3" target="SXxbHGS_TOv4Ob3SwH2M-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="504" y="403" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SXxbHGS_TOv4Ob3SwH2M-8" value="Display Blog Content" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeWidth=2;" edge="1" parent="1" source="SXxbHGS_TOv4Ob3SwH2M-2" target="SXxbHGS_TOv4Ob3SwH2M-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="501" y="455" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

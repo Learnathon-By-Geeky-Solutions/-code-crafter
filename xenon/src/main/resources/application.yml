@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: ${APPLICATION_NAME}
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?schema=public
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+server:
+  port: ${SERVER_PORT}
+
+security:
+  password:
+    strength: ${PASSWORD_STRENGTH}
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
+    validity: ${JWT_VALIDITY}
+
