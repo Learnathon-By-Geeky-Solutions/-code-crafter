@@ -74,6 +74,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     public ResponseEntity<?> updateLatitudeLongitude(UpdateUserLatitudeLongitude body) {
 
         User user = getCurrentUser();
+        if (user == null) throw clientException("User not found");
 
         user.setLatitude(body.getLatitude());
         user.setLongitude(body.getLongitude());

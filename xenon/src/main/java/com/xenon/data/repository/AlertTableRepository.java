@@ -16,12 +16,12 @@ public interface AlertTableRepository extends JpaRepository<AlertTable, Long> {
     // Find all active alerts created by a specific health authorization
     List<AlertTable> findByHealthAuthorization_IdAndIsActiveTrue(Long healthAuthorizationId);
 
-    // Find all active alerts by severity level
+    /*// Find all active alerts by severity level
     List<AlertTable> findByIsActiveTrueAndSeverityLevel(AlertSeverity severityLevel);
 
     // Find all active alerts within a date range
     List<AlertTable> findByIsActiveTrueAndStartDateBeforeAndEndDateAfterOrEndDateIsNull(
-            ZonedDateTime currentDate, ZonedDateTime currentDate2);
+            ZonedDateTime currentDate, ZonedDateTime currentDate2);*/
 
     // Find all active alerts within a geographical area
     @Query(value = """

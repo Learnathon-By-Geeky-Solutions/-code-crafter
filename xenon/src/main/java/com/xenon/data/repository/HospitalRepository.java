@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface HospitalRepository extends JpaRepository<Hospital, Long> {
-    boolean existsByRegistrationNo(String registrationNo);
+//    boolean existsByRegistrationNo(String registrationNo);
 
-    Optional<Hospital>  findByUserId(Long id);
+//    Optional<Hospital>  findByUserId(Long id);
 }

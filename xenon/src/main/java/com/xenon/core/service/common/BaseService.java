@@ -51,7 +51,7 @@ public abstract class BaseService {
     protected static final Pattern PHONE_PATTERN = Pattern.compile("^01[3-9]\\d{8}$");
     protected static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
 
-    protected User getCurrentUser() {
+    public User getCurrentUser() {
         String userJson = (String) request.getAttribute(ApplicationConfig.USER_REQUEST_ATTRIBUTE_KEY);
         if (Objects.isNull(userJson)) throw new AuthException(ResponseMessage.AUTH_HEADER_MISSING);
 

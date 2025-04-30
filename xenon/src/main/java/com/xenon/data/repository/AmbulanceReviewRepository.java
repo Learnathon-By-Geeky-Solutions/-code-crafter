@@ -22,5 +22,4 @@ public interface AmbulanceReviewRepository extends JpaRepository<AmbulanceReview
     @Query("SELECT COUNT(ar) FROM AmbulanceReview ar WHERE ar.ambulance.id = :ambulanceId")
     Integer getReviewCountByAmbulanceId(@Param("ambulanceId") Long ambulanceId);
 
-    boolean existsByUser_IdAndAmbulance_Id(Long userId, Long ambulanceId);
 }
