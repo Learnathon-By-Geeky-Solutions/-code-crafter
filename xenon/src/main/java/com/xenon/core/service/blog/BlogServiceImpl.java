@@ -11,7 +11,6 @@ import com.xenon.core.service.common.BaseService;
 import com.xenon.data.entity.blog.Blog;
 import com.xenon.data.entity.blog.Comment;
 import com.xenon.data.entity.blog.PostCategory;
-import com.xenon.data.entity.blog.doctorArticle.DoctorArticleCategory;
 import com.xenon.data.entity.doctor.Doctor;
 import com.xenon.data.entity.user.User;
 import com.xenon.data.entity.user.UserRole;
@@ -99,15 +98,8 @@ public class BlogServiceImpl extends BaseService implements BlogService {
         blog.setCategory(PostCategory.valueOf(body.getCategory()));
         blog.setMedia(body.getMedia());
 
-        if (body.getDoctorCategory() != null) {
-            try {
-                blog.setDoctorCategory(DoctorArticleCategory.valueOf(body.getDoctorCategory()));
-            } catch (IllegalArgumentException e) {
-                throw clientException("Invalid doctor category: " + body.getDoctorCategory());
-            }
-        } else {
-            blog.setDoctorCategory(null);
-        }
+
+        blog.setDoctorCategory(null);
 
         try {
             Blog savedBlog = blogRepository.save(blog);
@@ -197,18 +189,6 @@ public class BlogServiceImpl extends BaseService implements BlogService {
             PostCategory.valueOf(body.getCategory());
         } catch (IllegalArgumentException e) {
             throw clientException("Invalid category: " + body.getCategory());
-        }
-
-        // Validate doctor category if provided
-        if (body.getDoctorCategory() != null) {
-            try {
-                // Validate that the category exists
-                Class.forName("com.xenon.data.entity.blog.doctorArticle.DoctorArticleCategory")
-                        .getMethod("valueOf", String.class)
-                        .invoke(null, body.getDoctorCategory());
-            } catch (Exception e) {
-                throw clientException("Invalid doctor category: " + body.getDoctorCategory());
-            }
         }
     }
 

@@ -14,11 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -63,22 +61,26 @@ public class PharmacyServiceImpl extends BaseService implements PharmacyService 
             Page<Pharmacy> pharmacies = pharmacyRepository.findAll(pageable);
 
             // Map to response objects
-            List<PharmacyResponse> responseList = pharmacies.getContent().stream()
-                    .map(this::mapToPharmacyResponse)
-                    .collect(Collectors.toList());
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("content", responseList);
-            response.put("currentPage", pharmacies.getNumber());
-            response.put("totalItems", pharmacies.getTotalElements());
-            response.put("totalPages", pharmacies.getTotalPages());
-            response.put("size", pharmacies.getSize());
-
-            return success("Pharmacies retrieved successfully", response);
+            return getResponseEntity(pharmacies);
         } catch (Exception e) {
             log.error("Error retrieving all pharmacies: {}", e.getMessage(), e);
             throw new ApiException(e);
         }
+    }
+
+    private ResponseEntity<?> getResponseEntity(Page<Pharmacy> pharmacies) {
+        List<PharmacyResponse> responseList = pharmacies.getContent().stream()
+                .map(this::mapToPharmacyResponse)
+                .collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", responseList);
+        response.put("currentPage", pharmacies.getNumber());
+        response.put("totalItems", pharmacies.getTotalElements());
+        response.put("totalPages", pharmacies.getTotalPages());
+        response.put("size", pharmacies.getSize());
+
+        return success("Pharmacies retrieved successfully", response);
     }
 
     @Override
@@ -87,18 +89,7 @@ public class PharmacyServiceImpl extends BaseService implements PharmacyService 
             Page<Pharmacy> pharmacies = pharmacyRepository.findByUserName(name, pageable);
 
             // Map to response objects
-            List<PharmacyResponse> responseList = pharmacies.getContent().stream()
-                    .map(this::mapToPharmacyResponse)
-                    .collect(Collectors.toList());
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("content", responseList);
-            response.put("currentPage", pharmacies.getNumber());
-            response.put("totalItems", pharmacies.getTotalElements());
-            response.put("totalPages", pharmacies.getTotalPages());
-            response.put("size", pharmacies.getSize());
-
-            return success("Pharmacies retrieved successfully", response);
+            return getResponseEntity(pharmacies);
         } catch (Exception e) {
             log.error("Error searching pharmacies: {}", e.getMessage(), e);
             throw new ApiException(e);

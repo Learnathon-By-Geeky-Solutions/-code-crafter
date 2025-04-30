@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.response.common;
 
 import lombok.AllArgsConstructor;
@@ -17,4 +18,4 @@ public class DoctorBasicInfoResponse {
     private Double rating;
     private Integer totalConsultations;
     private Integer consultationFee;
-}
+}*/

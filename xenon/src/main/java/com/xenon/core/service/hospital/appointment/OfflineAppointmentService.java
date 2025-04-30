@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.service.hospital.appointment;
 
 import com.xenon.core.domain.request.hospital.CreateDoctorScheduleRequest;
@@ -31,17 +32,21 @@ public interface OfflineAppointmentService {
 
     ResponseEntity<?> completeOfflineAppointment(Long appointmentId);
 
-    /**
+    */
+/**
      * Confirms a pending offline appointment
      * @param appointmentId The appointment ID
      * @return ResponseEntity with success/failure message
-     */
+     *//*
+
     ResponseEntity<?> confirmOfflineAppointment(Long appointmentId);
 
-    /**
+    */
+/**
      * Creates a new doctor schedule for offline appointments
      * @param request The schedule creation request
      * @return ResponseEntity with success/failure message
-     */
+     *//*
+
     ResponseEntity<?> createDoctorSchedule(CreateDoctorScheduleRequest request);
-}
+}*/

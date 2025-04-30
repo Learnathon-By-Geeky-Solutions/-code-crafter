@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.hospital;
 
 import com.xenon.data.entity.doctor.Doctor;
@@ -20,3 +21,4 @@ public class CreateOfflineDoctorAffiliationRequest {
         return new OfflineDoctorAffiliation(doctor, hospitalBranch, fee);
     }
 }
+*/

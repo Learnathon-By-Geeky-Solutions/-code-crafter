@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.response.consultation;
 
 import lombok.AllArgsConstructor;
@@ -17,4 +18,4 @@ public class SlotResponse {
     private LocalTime endTime;
     private Integer duration;
     private Boolean available;
-}
+}*/

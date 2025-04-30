@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.service.hospital;
 
 import com.xenon.core.domain.request.hospital.*;
@@ -14,3 +15,4 @@ public interface HospitalService {
 
     ResponseEntity<?> createOfflineAppointmentTable(CreateOfflineAppointmentTable body);
 }
+*/

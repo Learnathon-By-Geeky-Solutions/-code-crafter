@@ -1,3 +1,4 @@
+/*
 package com.xenon.presenter.api.hospital;
 
 import com.xenon.common.annotation.PreAuthorize;
@@ -185,4 +186,4 @@ public class HospitalController {
             @Parameter(description = "Appointment ID") @PathVariable Long appointmentId) {
         return offlineAppointmentService.confirmOfflineAppointment(appointmentId);
     }
-}
+}*/

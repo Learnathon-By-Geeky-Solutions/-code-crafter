@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.response.hospital;
 
 import com.xenon.core.domain.response.common.DoctorBasicInfoResponse;
@@ -21,4 +22,4 @@ public class OfflineAppointmentResponse  {
     private String branchAddress;
     private LocalDate appointmentDate;
     private LocalTime appointmentTime;
-}
+}*/

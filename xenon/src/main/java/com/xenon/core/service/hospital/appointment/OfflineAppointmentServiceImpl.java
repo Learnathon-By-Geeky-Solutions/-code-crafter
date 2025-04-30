@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.service.hospital.appointment;
 
 import com.xenon.core.domain.exception.ApiException;
@@ -617,4 +618,4 @@ public class OfflineAppointmentServiceImpl extends BaseService implements Offlin
 
         return slots;
     }
-}
+}*/

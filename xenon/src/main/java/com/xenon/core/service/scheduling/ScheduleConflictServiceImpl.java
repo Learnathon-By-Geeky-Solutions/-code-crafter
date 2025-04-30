@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.service.scheduling;
 
 import com.xenon.core.domain.exception.ApiException;
@@ -27,7 +28,8 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
     private final DoctorRepository doctorRepository;
     private final DoctorScheduleRepository doctorScheduleRepository;
 
-   /* @Override
+   */
+/* @Override
     public ResponseEntity<?> checkSpecialistScheduleConflict(Long doctorId, DAY day, LocalTime startTime, LocalTime endTime) {
         try {
             // First verify the doctor exists
@@ -48,7 +50,8 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
             log.error("Error checking specialist schedule conflict: {}", e.getMessage(), e);
             throw new ApiException(e);
         }
-    }*/
+    }*//*
+
 
     @Override
     public ResponseEntity<?> checkOfflineScheduleConflict(Long doctorId, Long hospitalBranchId, DAY day, LocalTime startTime, LocalTime endTime) {
@@ -60,11 +63,14 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
             // Check offline schedule conflicts
             checkOfflineScheduleConflicts(doctorId, day, startTime, endTime);
 
-            /*// Check specialist schedule conflicts
+            */
+/*//*
+/ Check specialist schedule conflicts
             checkSpecialistScheduleConflicts(doctorId, day, startTime, endTime);
 
             // Check emergency consultation availability
-            checkEmergencyConsultationAvailability(doctor);*/
+            checkEmergencyConsultationAvailability(doctor);*//*
+
 
             return success("No schedule conflicts found", null);
         } catch (Exception e) {
@@ -73,7 +79,8 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
         }
     }
 
-   /* @Override
+   */
+/* @Override
     @Transactional
     public ResponseEntity<?> disableSpecialistConsultationsForEmergency(Long doctorId) {
         try {
@@ -117,7 +124,8 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
             log.error("Error disabling emergency consultation: {}", e.getMessage(), e);
             throw new ApiException(e);
         }
-    }*/
+    }*//*
+
 
     @Override
     public boolean doTimesOverlap(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
@@ -125,9 +133,11 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
         return (start1.isBefore(end2) && start2.isBefore(end1));
     }
 
-    /**
+    */
+/**
      * Checks for conflicts with offline schedules
-     */
+     *//*
+
     private void checkOfflineScheduleConflicts(Long doctorId, DAY day, LocalTime startTime, LocalTime endTime) {
         List<DoctorSchedule> offlineSchedules = doctorScheduleRepository.findByOfflineDoctorAffiliation_DoctorIdAndDay(doctorId, day);
 
@@ -141,7 +151,8 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
         }
     }
 
-    /**
+    */
+/**
      * Checks for conflicts with specialist schedules
     private void checkSpecialistScheduleConflicts(Long doctorId, DAY day, LocalTime startTime, LocalTime endTime) {
         List<SpecialistConsultation> consultations = specialistConsultationRepository.findByDoctorIdAndDay(doctorId, day);
@@ -152,15 +163,20 @@ public class ScheduleConflictServiceImpl extends BaseService implements Schedule
             }
         }
     }
-*/
-    /**
+*//*
+
+    */
+/**
      * Checks if emergency consultation is active
-     */
-    /*private void checkEmergencyConsultationAvailability(Doctor doctor) {
+     *//*
+
+    */
+/*private void checkEmergencyConsultationAvailability(Doctor doctor) {
         Optional<EmergencyConsultation> emergencyConsultation = emergencyConsultationRepository.findByDoctor(doctor);
 
         if (emergencyConsultation.isPresent() && emergencyConsultation.get().getAvailability() == AVAILABILITY.AVAILABLE) {
             throw new ClientException("Schedule Conflict: Doctor has an active emergency consultation");
         }
-    }*/
-}
+    }*//*
+
+}*/

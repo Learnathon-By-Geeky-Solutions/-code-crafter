@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.service.hospital;
 
 import com.xenon.core.domain.exception.ApiException;
@@ -164,3 +165,4 @@ public class HospitalServiceImpl extends BaseService implements HospitalService 
         super.validateBody(body);
     }
 }
+*/

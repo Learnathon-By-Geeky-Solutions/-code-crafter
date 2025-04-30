@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.hospital;
 
 import com.xenon.data.entity.hospital.DoctorSchedule;
@@ -19,3 +20,4 @@ public class CreateOfflineAppointmentTable {
         return new OfflineAppointmentTable(user, doctorSchedule);
     }
 }
+*/

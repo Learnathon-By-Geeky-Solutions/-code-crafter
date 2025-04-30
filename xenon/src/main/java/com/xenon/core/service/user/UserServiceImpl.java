@@ -2,7 +2,6 @@ package com.xenon.core.service.user;
 
 import com.xenon.core.domain.exception.ApiException;
 import com.xenon.core.domain.exception.ClientException;
-import com.xenon.core.domain.request.hospital.CreateAppointmentTableRequest;
 import com.xenon.core.domain.request.user.CreateAccountRequest;
 import com.xenon.core.domain.request.user.UpdateAccountRequest;
 import com.xenon.core.domain.request.user.UpdateUserLatitudeLongitude;
@@ -114,10 +113,6 @@ public class UserServiceImpl extends BaseService implements UserService {
         if (isNullOrBlank(String.valueOf(body.getUpazilaId()))) throw requiredField("Location selection");
         if (isNullOrBlank(String.valueOf(body.getGender()))) throw requiredField("Gender ");
         if (isNullOrBlank(body.getArea())) throw requiredField("Area");
-    }
-
-    private void validateCreateOfflineScheduleRequest(CreateAppointmentTableRequest body) {
-        super.validateBody(body);
     }
 
 }

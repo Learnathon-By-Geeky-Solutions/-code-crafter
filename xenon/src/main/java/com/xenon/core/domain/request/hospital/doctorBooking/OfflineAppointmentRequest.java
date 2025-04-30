@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.hospital.doctorBooking;
 
 import com.xenon.core.domain.request.common.BeneficiaryRequest;
@@ -46,4 +47,4 @@ public class OfflineAppointmentRequest extends BeneficiaryRequest {
 
         return appointment;
     }
-}
+}*/

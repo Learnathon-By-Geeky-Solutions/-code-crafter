@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.hospital;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -29,3 +30,4 @@ public class CreateDoctorScheduleRequest {
         return new DoctorSchedule(offlineDoctorAffiliation, day, startTime, endTime, availability, booking_quantity, duration);
     }
 }
+*/

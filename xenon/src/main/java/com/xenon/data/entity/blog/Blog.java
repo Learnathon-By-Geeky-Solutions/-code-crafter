@@ -34,6 +34,7 @@ public class Blog {
     @Column
     private PostCategory category;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "doctor_category")
     private DoctorArticleCategory doctorCategory;
 
@@ -69,10 +70,10 @@ public class Blog {
         this.viewCount = 0;
     }
 
-    public Blog(String title, String content, PostCategory category, DoctorArticleCategory doctorCategory, String media, User user) {
+    public Blog(String title, String content, DoctorArticleCategory doctorCategory, String media, User user) {
         this.title = title;
         this.content = content;
-        this.category = category;
+        this.category = PostCategory.DOCTOR_ARTICLE;
         this.doctorCategory = doctorCategory;
         this.media = media;
         this.user = user;

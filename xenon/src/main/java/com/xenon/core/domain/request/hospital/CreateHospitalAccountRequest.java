@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.hospital;
 
 import com.xenon.data.entity.hospital.HOSPITAL_TYPE;
@@ -19,3 +20,4 @@ public class CreateHospitalAccountRequest {
         return new Hospital(registrationNo, hospitalType, user);
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.xenon.core.domain.request.hospital;
 
 import com.xenon.data.entity.hospital.Hospital;
@@ -29,3 +30,4 @@ public class CreateHospitalBranchAccountRequest {
     }
 
 }
+*/
